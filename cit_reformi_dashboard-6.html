@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIT-reformi mudel — DPT vs klassikaline · prototüüp v2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1115; --panel:#171a21; --panel2:#1d212b; --line:#262b36;
+  --txt:#e8ebf2; --mut:#8a93a6; --dim:#5c6475;
+  --blue:#4f8ff7; --sky:#8fc1ff; --amber:#f0a84b; --grn:#47c98f; --red:#e5646c;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font:15px/1.55 'IBM Plex Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+header{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:baseline;padding:26px 28px 18px;border-bottom:1px solid var(--line)}
+h1{font:700 24px/1.15 'Space Grotesk',sans-serif;letter-spacing:.2px}
+h1 .thin{color:var(--mut);font-weight:500}
+.tag{font:500 11px/1 var(--mono);color:var(--mut);border:1px solid var(--line);border-radius:99px;padding:6px 11px;letter-spacing:.6px;text-transform:uppercase}
+.tag b{color:var(--amber);font-weight:600}
+.wrap{display:grid;grid-template-columns:330px 1fr;gap:0;min-height:100vh}
+@media(max-width:1020px){.wrap{grid-template-columns:1fr}}
+/* ---------- vasak rööbas ---------- */
+aside{border-right:1px solid var(--line);padding:20px 22px 40px;background:linear-gradient(180deg,#12151b,var(--bg))}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0 4px}
+.seg button{background:var(--panel);border:1px solid var(--line);color:var(--mut);font:600 12px 'IBM Plex Sans';padding:9px 4px;border-radius:8px;cursor:pointer;transition:all .15s}
+.seg button:hover{color:var(--txt)}
+.seg button.on{background:#20304c;border-color:var(--blue);color:var(--sky)}
+.custom-note{font:500 11px var(--mono);color:var(--amber);min-height:16px;margin-bottom:8px}
+.grp{margin-top:20px}
+.grp>h3{font:700 11px/1 var(--mono);letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);padding-bottom:8px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.ctl{margin-bottom:13px}
+.ctl .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ctl label{font-size:12.5px;color:var(--mut)}
+.ctl output{font:600 13px var(--mono);color:var(--txt)}
+input[type=range]{width:100%;appearance:none;height:4px;border-radius:2px;background:var(--line);margin-top:7px;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;background:var(--sky);border:2px solid #0f1115;box-shadow:0 0 0 1px var(--blue)}
+input[type=range]:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
+.chip{display:inline-block;font:500 10px var(--mono);color:#caa04a;background:#2a2415;border:1px solid #4a3d1c;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.tgl{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.tgl input{width:16px;height:16px;accent-color:var(--blue);cursor:pointer}
+.tgl label{font-size:12.5px;color:var(--mut);cursor:pointer}
+.anchor{display:grid;gap:6px;margin-top:4px}
+.anchor button{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--mut);font:500 12px 'IBM Plex Sans';padding:8px 11px;cursor:pointer}
+.anchor button.on{border-color:var(--amber);color:var(--amber);background:#241d12}
+.reset{margin-top:22px;width:100%;background:none;border:1px dashed var(--line);border-radius:8px;color:var(--dim);font:500 12px 'IBM Plex Sans';padding:9px;cursor:pointer}
+.reset:hover{color:var(--mut);border-color:var(--dim)}
+/* ---------- sisu ---------- */
+main{padding:22px 28px 60px;min-width:0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px 12px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;inset:0 auto 0 0;width:3px;background:var(--kc,var(--blue))}
+.kpi .l{font:500 11px var(--mono);letter-spacing:.8px;text-transform:uppercase;color:var(--dim)}
+.kpi .v{font:600 26px/1.2 var(--mono);margin-top:4px}
+.kpi .s{font:400 11.5px 'IBM Plex Sans';color:var(--mut);margin-top:3px}
+.pos{color:var(--grn)}.neg{color:var(--red)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:1350px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.card.full{grid-column:1/-1}
+.card h2{font:700 15px 'Space Grotesk';letter-spacing:.2px}
+.card .sub{font-size:12px;color:var(--mut);margin:2px 0 10px}
+.cwrap{position:relative;height:290px}
+.cwrap.tall{height:330px}
+/* heatmap */
+.hm{display:grid;grid-template-columns:auto repeat(5,1fr);gap:4px;margin-top:6px}
+.hm .h{font:500 11px var(--mono);color:var(--dim);display:flex;align-items:center;justify-content:center;padding:4px}
+.hm .c{font:600 12px var(--mono);border-radius:6px;padding:11px 4px;text-align:center;cursor:pointer;border:1px solid transparent;transition:transform .1s}
+.hm .c:hover{transform:scale(1.05);border-color:var(--txt)}
+.hm .c.sel{border-color:var(--txt)}
+.hint{font-size:11.5px;color:var(--dim);margin-top:8px}
+/* valideering */
+table{width:100%;border-collapse:collapse;font:500 13px var(--mono)}
+th{font:500 11px var(--mono);letter-spacing:.8px;text-transform:uppercase;color:var(--dim);text-align:right;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{text-align:right;padding:7px 8px;border-bottom:1px solid #1c202a}
+th:first-child,td:first-child{text-align:left}
+.ok{color:var(--grn)}.warn{color:var(--amber)}
+footer{margin-top:22px;font-size:12px;color:var(--dim);line-height:1.7;border-top:1px solid var(--line);padding-top:14px}
+footer b{color:var(--mut)}
+/* v8: õhulisus, metoodikaleht, kaks taset */
+.grid{gap:16px}
+.card{padding:18px 20px;border-radius:14px}
+.kpis{gap:14px}
+#pgAudit.simple .adv{display:none}
+#pgAudit.simple .fstep .ff, #pgAudit.simple .fstep .fi{display:none}
+.viewtgl{display:flex;gap:6px;margin:4px 0 14px}
+.viewtgl button{background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--mut);font:600 12px 'IBM Plex Sans';padding:8px 16px;cursor:pointer}
+.viewtgl button.on{border-color:var(--sky);color:var(--sky);background:#20304c}
+.q{display:flex;align-items:baseline;gap:10px;padding:7px 0;font-size:13px}
+.q .qi{font-weight:700}
+.qok{color:var(--grn)}.qwarn{color:var(--amber)}
+.gobtn{background:none;border:1px solid var(--line);border-radius:8px;color:var(--sky);font:600 12px 'IBM Plex Sans';padding:8px 14px;cursor:pointer;margin-top:10px}
+.gobtn:hover{border-color:var(--sky)}
+.srct{font-family:'IBM Plex Sans'}
+.srct td{font-size:12.5px}
+/* audit / arvutuskäik */
+.b{display:inline-block;font:600 9.5px var(--mono);border-radius:4px;padding:1px 7px;letter-spacing:.4px;margin-right:7px;white-space:nowrap}
+.b.g{background:#12291d;color:#47c98f;border:1px solid #1e4531}
+.b.bl{background:#12233c;color:#8fc1ff;border:1px solid #1e3a5f}
+.b.o{background:#2a2113;color:#f0a84b;border:1px solid #4a3a1c}
+.arow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #1c202a;font-size:12.5px}
+.arow .an{color:var(--txt)}
+.arow .as{color:var(--dim);font-size:11px}
+.arow .av{font:600 12.5px var(--mono);white-space:nowrap}
+.fstep{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:9px 13px;margin-bottom:6px}
+.fstep .fn{font-weight:600;font-size:12.5px;display:flex;justify-content:space-between;gap:10px}
+.fstep .fv{font:600 13px var(--mono);white-space:nowrap}
+.fstep .ff{font:500 11px var(--mono);color:var(--sky);margin-top:3px}
+.fstep .fi{font-size:11px;color:var(--mut);margin-top:2px}
+.sbar{display:flex;height:18px;border-radius:9px;overflow:hidden;border:1px solid var(--line);margin:10px 0 8px}
+.sbar div{height:100%}
+.slegend{font-size:11.5px;color:var(--mut);display:flex;gap:16px;flex-wrap:wrap}
+.colstrip{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--mut);margin:2px 0 8px}
+.colstrip span.term{white-space:nowrap}
+/* aasta valik, lukud, tooltipid, massmuudatused */
+.yrsel{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:4px}
+.yrsel button{background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--mut);font:600 11.5px var(--mono);padding:6px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.yrsel button.on{border-color:var(--sky);color:var(--sky);background:#20304c}
+.yrsel .st{font-size:9.5px;line-height:1}
+.ops{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.ops button{background:var(--panel);border:1px solid var(--line);border-radius:7px;color:var(--mut);font:500 11px 'IBM Plex Sans';padding:7px 5px;cursor:pointer}
+.ops button:hover:not(:disabled){color:var(--txt)}
+.ops button:disabled{opacity:.35;cursor:default}
+.ops .wide{grid-column:1/-1}
+.lockyr{margin-top:8px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:7px;color:var(--mut);font:500 11.5px 'IBM Plex Sans';padding:7px;cursor:pointer}
+.lockyr:hover{color:var(--txt)}
+.ctl.dis{opacity:.38}
+.ctl.dis input{pointer-events:none}
+.info{position:relative;display:inline-block;color:var(--dim);cursor:help;font:600 10px var(--mono);margin-left:5px;border:1px solid var(--line);border-radius:50%;width:14px;height:14px;text-align:center;line-height:12px;vertical-align:1px}
+.info .tip{visibility:hidden;opacity:0;position:absolute;left:-8px;bottom:150%;z-index:30;width:238px;background:#232833;border:1px solid #333a49;border-radius:8px;padding:9px 11px;font:400 11.5px/1.55 'IBM Plex Sans';color:var(--txt);transition:opacity .12s;box-shadow:0 8px 24px rgba(0,0,0,.5);white-space:normal;text-transform:none;letter-spacing:0}
+.info:hover .tip,.info:focus .tip{visibility:visible;opacity:1}
+.lockbtn{background:none;border:none;cursor:pointer;font-size:12px;padding:0 1px;vertical-align:-1px}
+.modmark{color:var(--amber);font-weight:600;margin-left:2px}
+/* vahelehed */
+.tabs{display:flex;gap:6px;margin-left:auto}
+.tabs button{background:var(--panel);border:1px solid var(--line);color:var(--mut);font:600 12.5px 'Space Grotesk';padding:8px 16px;border-radius:8px;cursor:pointer}
+.tabs button.on{background:#20304c;border-color:var(--blue);color:var(--sky)}
+.tabs button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+/* aastatabel */
+.ytwrap{overflow-x:auto;margin-top:6px}
+.yt{min-width:880px}
+.yt th{white-space:nowrap}
+.yt td{font-size:12.5px;white-space:nowrap}
+.yt tr.fc td{background:rgba(240,168,75,.035)}
+.yt tr.sum td{border-top:2px solid var(--line);border-bottom:none;font-weight:600;color:var(--txt)}
+.badge{display:inline-block;font:500 9.5px var(--mono);letter-spacing:.4px;border-radius:4px;padding:1px 6px;border:1px solid var(--line);color:var(--dim)}
+.badge.h{color:var(--sky);border-color:#2a3a55}
+.badge.e{color:var(--amber);border-color:#4a3d1c}
+.badge.f{color:#e8b46a;border-color:#4a3d1c;background:#241d12}
+.dcell{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.dbar{height:7px;border-radius:3px;min-width:1px}
+.eff{color:var(--mut)}.eff b{color:var(--txt);font-weight:600}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Ettevõtte tulumaksu reform <span class="thin">· DPT → klassikaline CIT</span></h1>
+  <span class="tag">Prognoos 2026–2030 · M€</span>
+  <span class="tag">Stsenaarium: <b id="tagScen">Baas</b></span>
+  <span class="tag">Ankur: <b id="tagAnchor">ühine populatsioon</b></span>
+  <span class="tag">Baseline: <b id="tagBl">kassa-trend</b></span>
+  <nav class="tabs" role="tablist">
+    <button id="tabIntro" class="on" role="tab" aria-selected="true">Metoodika</button>
+    <button id="tabTable" role="tab" aria-selected="false">Aastatabel</button>
+    <button id="tabOver" role="tab" aria-selected="false">Ülevaade</button>
+    <button id="tabAudit" role="tab" aria-selected="false">Arvutuskäik</button>
+    <button id="tabMet" role="tab" aria-selected="false">Eksperdi vaade</button>
+  </nav>
+</header>
+
+<div class="wrap">
+<aside>
+  <div class="grp" style="margin-top:4px">
+    <h3>Stsenaarium</h3>
+    <div class="seg" role="group" aria-label="Stsenaarium">
+      <button data-sc="kons">Konserv.</button>
+      <button data-sc="baas" class="on">Baas</button>
+      <button data-sc="agr">Agress.</button>
+    </div>
+    <div class="custom-note" id="customNote"></div>
+  </div>
+
+  <div class="grp">
+    <h3>Populatsiooni ankur <span class="info" tabindex="0">i<span class="tip"><b>Ühine populatsioon:</b> kõik aastad arvutatakse sama ettevõtete kogumi baasil — ainult firmad, kelle kohta on olemas nii kehtiva kui klassikalise korra hinnang. Sobib, kui tahad hinnata puhtalt maksumuudatuse mõju ilma populatsiooni muutuseta; konservatiivne valik.<br><br><b>Kõik firmad:</b> iga aasta kasutab kogu vastava aasta ettevõtete populatsiooni, sh firmad, kellel kehtiva korra hinnang puudub (nende jaotamine loetakse nulliks). Arvestab ettevõtete lisandumise ja struktuurimuutustega; sobib pikemaks vaateks, aga on ülemine ots.<br><br>Tegelik mõju jääb kahe vahele — seetõttu näitab graafik alati mõlemat koridorina.</span></span></h3>
+    <div class="anchor" role="group" aria-label="Ankur">
+      <button data-an="common" class="on">Ühine populatsioon · konservatiivne (T<sub>klassik</sub> 2024 = 1 476)</button>
+      <button data-an="all">Kõik firmad · ülemine ots (T<sub>klassik</sub> 2024 = 1 656)</button>
+    </div>
+    <div class="hint">Graafikul on alati näha mõlema ankru koridor; valik määrab, kumb joon juhib põhinäitajaid.</div>
+  </div>
+
+  <div class="grp">
+    <h3>DPT baseline (kehtiv kord) <span class="info" tabindex="0">i<span class="tip"><b>Kassa-trend (vaikimisi):</b> 2025 tegelik laekumine (1 125 M€) × SKP kasv. Lihtne, aga lähtetase sisaldab määratõusu-eelse ettejaotamise ühekordset paisutust (~+13%).<br><br><b>Struktuurne (katsetusel):</b> kolm komponenti eraldi — dividendimaks (struktuurne voog 2 815 M€ × 27,9%; TSD-ga ristkontrollitud −0,5%), pankade avansiline tulumaks ja väikesed komponendid (erisoodustused jm). Allikad: JITM komponentlahutus + TSD lisa 7.<br><br>Struktuurne muutub vaikimisi meetodiks alles siis, kui ta näitab järjepidevalt väiksemat prognoosiviga — seisu näed Metoodika võrdluse vahelehel.</span></span></h3>
+    <div class="anchor" role="group" aria-label="Baseline">
+      <button data-bl="trend" class="on">Kassa-trend · vaikimisi (2025 laekumine × kasv)</button>
+      <button data-bl="strukt">Struktuurne · katsetusel (komponendid, TSD/JITM)</button>
+    </div>
+    <div class="tgl" id="pankTgl" style="margin-top:8px;opacity:.35"><input type="checkbox" id="blPank"><label for="blPank">Pangakomponent kasvab SKP-ga (muidu püsiv tase) <span class="info" tabindex="0">i<span class="tip">Pankade avansiline tulumaks sõltub intressitsüklist, mitte SKP-st (2023 hüpe 50→119 M€ tuli EURIBOR-ist). Püsiv tase on konservatiivne; SKP-ga kasvatamine lisab 2030-ks ~38 M€ baseline\u2019i.</span></span></label></div>
+  </div>
+
+  <div class="grp">
+    <h3>Prognoosiaasta</h3>
+    <div class="yrsel" id="yrSel" role="group" aria-label="Aasta valik"></div>
+    <button class="lockyr" id="lockYr"></button>
+    <div class="hint" id="yrHint"></div>
+    <div class="ops">
+      <button id="opApplyAll" class="wide" title="Kopeerib valitud aasta kõik parameetrid igale lukustamata aastale">Rakenda valitud aasta kõigile lukustamata</button>
+      <button id="opPrev" title="Kopeerib eelmise aasta seadistused valitud aastale">← eelmisest</button>
+      <button id="opNext" title="Kopeerib järgmise aasta seadistused valitud aastale">järgmisest →</button>
+      <button id="opResetYr" title="Taastab valitud aasta aktiivse stsenaariumi vaikeväärtustele">Lähtesta aasta</button>
+      <button id="opResetAll" title="Taastab kõik prognoosiaastad ja eemaldab lukud">Lähtesta kõik</button>
+    </div>
+  </div>
+
+  <div class="grp">
+    <h3>Maksupoliitika</h3>
+    <div class="ctl"><div class="row"><label for="tau">CIT määr τ <span class="info" tabindex="0">i<span class="tip">Klassikalise korra maksumäär kogu maksustatavalt kasumilt. Kõrgem määr toob rohkem tulu, aga võimendab käitumisreaktsioone (varjamine, shifting, investeeringud). Kehtiv seadusemäär on 22%. (Allikas: Tulumaksuseadus)</span></span></label><output id="o_tau"></output></div>
+      <input type="range" id="tau" min="0.10" max="0.30" step="0.005"></div>
+    <div class="ctl"><div class="row"><label for="tauh">Ajalooliste aastate CIT määr <span class="info" tabindex="0">i<span class="tip">Määr, millega arvutatakse hüpoteetiline klassikaline maks AJALOOLISTEL aastatel (2020–2025). Tegelik segamäär oli toona ~18% (20/80 standard + 14/86 soodusmäär), mitte tänane 22%. Mõjutab ainult ajaloo ridu tabelis ja graafikul; prognoosiaastad kasutavad iga aasta enda CIT määra ülalt.</span></span></label><output id="o_tauh"></output></div>
+      <input type="range" id="tauh" min="0.10" max="0.30" step="0.005"></div>
+    <div class="tgl"><input type="checkbox" id="ulem"><label for="ulem">Üleminekuvaru ühekordne maksustamine <span class="info" tabindex="0">i<span class="tip">Kas üleminekul maksustatakse ühekordselt ka varem akumuleeritud jaotamata kasumi varu. Tulu jaotub valitud arvule aastatele alates 2026. Varu suurus on kohatäide — asenda paneeli tegeliku summaga.</span></span></label></div>
+    <div class="ctl" id="varuCtl"><div class="row"><label for="varu">Varu suurus <span class="chip">ASENDA</span></label><output id="o_varu"></output></div>
+      <input type="range" id="varu" min="5000" max="50000" step="1000"></div>
+    <div class="ctl" id="nyCtl"><div class="row"><label for="ny">Varu jaotus (aastat)</label><output id="o_ny"></output></div>
+      <input type="range" id="ny" min="1" max="5" step="1"></div>
+  </div>
+
+  <div class="grp">
+    <h3>Käitumine · valitud aasta <span class="chip">ILLUSTRATIIVNE</span></h3>
+    <div class="ctl"><div class="row"><label for="vh">Kasumi varjamine <span class="info" tabindex="0">i<span class="tip">Kui suur osa maksustatavast kasumist jääb maksu tõttu deklareerimata või liigub agressiivse maksuplaneerimise kaudu baasist välja. 0% = mõju puudub · 50% = mõõdukas · 100% = mudeli maksimaalne eeldus (22% määra juures kaob ligi pool baasist). Vähendab klassikalise korra maksubaasi. (Allikas: teaduskirjandus; kalibreerimata)</span></span></label><output id="o_vh"></output></div>
+      <input type="range" id="vh" min="0" max="1" step="0.01"></div>
+    <div class="ctl"><div class="row"><label for="sh">Profit shifting <span class="info" tabindex="0">i<span class="tip">Rahvusvaheliste kontsernide kasumi viimine madalama määraga riikidesse. Rakendub ainult suurfirmade osale baasist (50%) ja ainult määra sellele osale, mis ületab rahvusvahelist võrdlusmäära (15%). 100% = maksimaalne eeldus, ~9% baasist 22% määra juures.</span></span></label><output id="o_sh"></output></div>
+      <input type="range" id="sh" min="0" max="1" step="0.01"></div>
+    <div class="ctl"><div class="row"><label for="im">Investeeringute mõju <span class="info" tabindex="0">i<span class="tip">Kõrgem maks vähendab reinvesteerimist ja seeläbi tuleviku kasumite kasvu. Mõju kumuleerub aastast aastasse. 0% = mõju puudub · 100% = kasumikasv väheneb 4,4 protsendipunkti aastas (22% määra juures).</span></span></label><output id="o_im"></output></div>
+      <input type="range" id="im" min="0" max="1" step="0.01"></div>
+    <div class="ctl"><div class="row"><label for="tm">Tööjõu mõju <span class="info" tabindex="0">i<span class="tip">Osa maksukoormusest kandub töötajatele: palgakasv aeglustub, mis vähendab tarbimist (KM-baas) ja tööjõumakse. 100% = palgakasv väheneb 2,2 protsendipunkti aastas (22% määra juures).</span></span></label><output id="o_tm"></output></div>
+      <input type="range" id="tm" min="0" max="1" step="0.01"></div>
+    <div class="ctl"><div class="row"><label for="eff">Kogumise efektiivsus <span class="info" tabindex="0">i<span class="tip">Kui suur osa teoreetilisest maksusummast riigile reaalselt laekub (haldussuutlikkus, vaidlused, maksuvõlad). 100% = täiuslik kogumine. Rakendub CIT-le, KM-le ja tööjõumaksudele.</span></span></label><output id="o_eff"></output></div>
+      <input type="range" id="eff" min="0.85" max="1" step="0.005"></div>
+  </div>
+
+  <div class="grp">
+    <h3>Makro · valitud aasta <span class="chip">EELDUS</span></h3>
+    <div class="ctl"><div class="row"><label for="g">SKP nominaalkasv <span class="info" tabindex="0">i<span class="tip">Nominaalse SKP kasv valitud aastal. Kasvatab kasumibaasi, DPT-baseline’i ja SKP-ga seotud baase. Asenda Rahandusministeeriumi suveprognoosi aastapõhiste numbritega. (Allikas: Rahandusministeerium — veel sisestamata)</span></span></label><output id="o_g"></output></div>
+      <input type="range" id="g" min="0" max="0.10" step="0.0025"></div>
+    <div class="ctl"><div class="row"><label for="wg">Palgakasv <span class="info" tabindex="0">i<span class="tip">Keskmine palgakasv valitud aastal. Juhib palgafondi (tööjõumaksud) ja tarbimisbaasi (KM) kasvu mõlemas süsteemis.</span></span></label><output id="o_wg"></output></div>
+      <input type="range" id="wg" min="0" max="0.10" step="0.0025"></div>
+    <div class="ctl"><div class="row"><label for="jaotus">Jaotamise kohandus (DPT) <span class="info" tabindex="0">i<span class="tip">Ühekordne nihe kehtiva korra (DPT) laekumises valitud aastal — näiteks reformieelne massiline ettejaotamine (+) või jaotamise edasilükkamine (−). 0% = nihet pole.</span></span></label><output id="o_jaotus"></output></div>
+      <input type="range" id="jaotus" min="-0.3" max="0.3" step="0.01"></div>
+  </div>
+
+  <div class="grp">
+    <h3>Seadistused</h3>
+    <div class="ops">
+      <button id="opExport" title="Salvestab kõik aastapõhised parameetrid, lukud, stsenaariumi ja ankru JSON-failina">Ekspordi (JSON)</button>
+      <button id="opImport" title="Laeb varem eksporditud seadistusfaili">Impordi</button>
+    </div>
+    <input type="file" id="impFile" accept=".json,application/json" hidden>
+  </div>
+
+  <button class="reset" id="reset">Lähtesta baasstsenaariumile</button>
+</aside>
+
+<main>
+<section id="pgIntro">
+  <div class="card full">
+    <h2>Kuidas see mudel töötab?</h2>
+    <div class="sub">See leht selgitab kogu arvutuse loogikat lihtsas keeles — ilma valemiteta. Numbrid leiad Aastatabelist, graafikud Ülevaatest ja iga numbri täpse tekkeloo Arvutuskäigust.</div>
+    <div class="grid" style="margin-top:0">
+      <div>
+        <div style="font-size:13.5px;line-height:1.8">
+          <p style="margin-bottom:10px"><b>1.</b> Kõigepealt vaatame <b>iga Eesti ettevõtte kasumit</b> — need andmed tulevad äriregistri majandusaasta aruannetest (üle miljoni aruande).</p>
+          <p style="margin-bottom:10px"><b>2.</b> Võtame maha osa, mida seadus ei maksustaks: varasemate aastate <b>kahjumid</b> ja kontsernisisesed dividendid, mida on juba korra maksustatud.</p>
+          <p style="margin-bottom:10px"><b>3.</b> Nii saame teada, <b>kui palju kasumit võiks klassikaline tulumaks maksustada</b>.</p>
+          <p style="margin-bottom:10px"><b>4.</b> Arvestame, et päris elus ettevõtted <b>reageerivad</b>: mõni investeerib vähem, mõni deklareerib vähem kasumit, mõni viib kasumi välismaale. Nende reaktsioonide suurust saad ise liuguritega muuta.</p>
+          <p style="margin-bottom:10px"><b>5.</b> Alles siis arvutame, <b>kui palju maksu riik tegelikult koguks</b> — arvestades ka seda, et kogu teoreetiline summa kunagi päriselt kohale ei jõua.</p>
+          <p style="margin-bottom:10px"><b>6.</b> Lõpuks <b>võrdleme tänase süsteemiga</b>: mida riik saaks samadel aastatel praeguse, jaotamispõhise maksuga. Vahe ongi reformi mõju.</p>
+          <p style="color:var(--mut);font-size:12px;margin-top:14px">See on prototüüp ja õppetöö, mitte Rahandusministeeriumi ametlik prognoos. Kõik eeldused on muudetavad ja iga numbri päritolu on kontrollitav.</p>
+        </div>
+        <button class="gobtn" data-goto="table">Vaata numbreid →</button>
+        <button class="gobtn" data-goto="audit">Ava täisarvutus →</button>
+      </div>
+      <div>
+        <div class="flow">
+          <div class="step res"><div><div class="sn">Äriregistri andmed</div><div class="sd">iga ettevõtte kasum (RIK avaandmed)</div></div><div class="sv">🟢</div></div>
+          <div class="arrow">↓</div>
+          <div class="step"><div><div class="sn">Maksustatav kasum</div><div class="sd">pärast kahjumeid ja topeltmaksustamise vältimist</div></div><div class="sv"></div></div>
+          <div class="arrow">↓</div>
+          <div class="step"><div><div class="sn">Majanduskasv</div><div class="sd">kasum kasvab koos majandusega (RM prognoos)</div></div><div class="sv"></div></div>
+          <div class="arrow">↓</div>
+          <div class="step"><div><div class="sn">Käitumisreaktsioonid</div><div class="sd">vähem investeeringuid · varjamine · kasumi väljaviimine</div></div><div class="sv">🔵</div></div>
+          <div class="arrow">↓</div>
+          <div class="step res"><div><div class="sn">Efektiivne maksubaas</div><div class="sd">see, mida riik päriselt maksustab</div></div><div class="sv"></div></div>
+          <div class="arrow">↓</div>
+          <div class="step"><div><div class="sn">Maksumäär × kogumine</div><div class="sd">22% (muudetav) ja kogumise efektiivsus</div></div><div class="sv"></div></div>
+          <div class="arrow">↓</div>
+          <div class="step fin"><div><div class="sn">Riigi maksutulu vs tänane süsteem</div><div class="sd">reformi mõju = kahe süsteemi vahe</div></div><div class="sv">ΔR</div></div>
+        </div>
+      </div>
+      <div class="card full" style="margin:0">
+        <h2 style="font-size:14px">Kust andmed tulevad?</h2>
+        <table class="srct"><thead><tr><th style="text-align:left">Andmed</th><th style="text-align:left">Allikas</th><th style="text-align:left">Kus mudelis kasutatakse</th></tr></thead><tbody>
+          <tr><td style="text-align:left">Ettevõtete kasumid ja bilansid</td><td style="text-align:left">RIK e-äriregistri avaandmed</td><td style="text-align:left">maksustatava kasumibaasi arvutus (mikrosimulatsioon)</td></tr>
+          <tr><td style="text-align:left">Maksulaekumised kuude kaupa</td><td style="text-align:left">Riigieelarve laekumiste fail (EMTA)</td><td style="text-align:left">tänase süsteemi tase, valideerimine, 2026 jälgija</td></tr>
+          <tr><td style="text-align:left">Laekumise komponendid (dividendid, pangad, erisoodustused)</td><td style="text-align:left">MTA JITM komponentlahutus</td><td style="text-align:left">struktuurne baseline, täpne valideerimine</td></tr>
+          <tr><td style="text-align:left">Deklareeritud dividendid ja efektiivsed määrad</td><td style="text-align:left">MTA TSD lisa 7</td><td style="text-align:left">määrakorrektsioonid, ettejaotamise mõõtmine</td></tr>
+          <tr><td style="text-align:left">SKP ja palgakasv</td><td style="text-align:left">Statistikaamet · Rahandusministeeriumi prognoos <span class="chip">SISESTAMATA</span></td><td style="text-align:left">kasumibaasi ja tänase süsteemi kasv</td></tr>
+          <tr><td style="text-align:left">Käitumisreaktsioonide suurused</td><td style="text-align:left">Teaduskirjandus <span class="chip">KALIBREERIMATA</span></td><td style="text-align:left">liugurite stsenaariumid (konservatiivne/baas/agressiivne)</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pgOver" hidden>
+  <div class="kpis">
+    <div class="kpi" style="--kc:var(--amber)"><div class="l">ΔR CIT 2026</div><div class="v" id="k1"></div><div class="s" id="k1s"></div></div>
+    <div class="kpi" style="--kc:var(--amber)"><div class="l">ΔR CIT 2030</div><div class="v" id="k2"></div><div class="s" id="k2s"></div></div>
+    <div class="kpi" style="--kc:var(--blue)"><div class="l">T_klassik vs T_kehtiv 2030</div><div class="v" id="k3"></div><div class="s">klassikaline / DPT jätkuks</div></div>
+    <div class="kpi" style="--kc:var(--grn)"><div class="l">Kumulatiivne kogumõju 2026–30</div><div class="v" id="k4"></div><div class="s">CIT + KM + tööjõumaksud kokku</div></div>
+  </div>
+
+  <div class="grid">
+    <div class="card full">
+      <h2>ΔR-koridor — eelarvemõju vahemikuna <span class="info" tabindex="0">i<span class="tip">Näitab reformi netomõju (ΔR = klassikaline maks − kehtiva korra laekumine) aastate lõikes. Ajaloo punktid = staatiline mikrosim ajaloolise CIT määraga; prognoosijooned = käitumiskiiludega. Varjutatud ala on kahe populatsiooniankru vahe — tõlgenda tulemust vahemikuna, mitte punktina.</span></span></h2>
+      <div class="sub">Ajalugu 2020–2024: staatiline mikrosim (päris RIK andmed) ajaloolise CIT määra liuguriga. Prognoos 2026–2030: käitumuskiiludega. Varjutatud ala = populatsiooniankrute vahe („kõik firmad" ülemine, „ühine" alumine).</div>
+      <div class="cwrap tall"><canvas id="cCorridor"></canvas></div>
+    </div>
+
+    <div class="card">
+      <h2>Kuhu staatiline pluss kaob — 2030 dekompositsioon <span class="info" tabindex="0">i<span class="tip">Juga-graafik lahutab 2030. aasta tulemuse sammudeks: staatiline lagi (baas × τ ilma käitumiseta) miinus investeeringu-drag, varjamine, shifting ja kogumiskadu annab T_klassik'u; sellest lahutatakse kehtiva korra laekumine. Iga riba = ühe teguri panus eurodes.</span></span></h2>
+      <div class="sub">Staatilisest laest netomõjuni, aktiivne ankur ja parameetrid.</div>
+      <div class="cwrap"><canvas id="cWater"></canvas></div>
+    </div>
+
+    <div class="card">
+      <h2>Kogutulu: baseline vs reform <span class="info" tabindex="0">i<span class="tip">CIT + käibemaks + tööjõumaksud kokku mõlemas maailmas. Vahe tekib kahest kanalist: maksusüsteemi vahetus (CIT) ja palgakasvu kärbe (KM + tööjõumaksud). KM/tööjõud on lihtsustatud satelliit — tõlgenda suunda, mitte täpset taset.</span></span></h2>
+      <div class="sub">CIT + KM + tööjõumaksud. KM ja tööjõud on lihtsustatud satelliit (kanal: palgad → tarbimine).</div>
+      <div class="cwrap"><canvas id="cTotal"></canvas></div>
+    </div>
+
+
+
+
+    <div class="card">
+      <h2>Mudeli kvaliteet</h2>
+      <div class="sub">Kokkuvõte — detailid Eksperdi vaates</div>
+      <div class="q"><span class="qi qok">✓</span><span>Alt-üles hinnang vs MTA tegelik laekumine: viga <b style="font-family:var(--mono)">−2,1%</b> (2024)</span></div>
+      <div class="q"><span class="qi qok">✓</span><span>Dividendiproksü määrakorrigeeritud jääkviga: <b style="font-family:var(--mono)">−3,2%</b> (2024)</span></div>
+      <div class="q"><span class="qi qwarn">⚠</span><span>Käitumisparameetrid on illustratiivsed, kirjandusest veel kalibreerimata — tulemusi tõlgenda vahemikuna</span></div>
+      <div class="q"><span class="qi qwarn">⚠</span><span>2026 tegelik laekumine (jaan–mai) jääb mõlemast baseline’ist allapoole — tõenäoline ettejaotamise tagasilöögi aasta</span></div>
+      <button class="gobtn" data-goto="met">Vaata detailset valideerimist ja tundlikkust →</button>
+    </div>
+  </div>
+</section>
+
+<section id="pgTable" hidden>
+  <div class="card full">
+    <h2>Aastatabel 2020–2030 — kehtiv kord vs klassikaline CIT <span class="info" tabindex="0">i<span class="tip">Aastapõhine võrdlus: mida riik sai/saaks kehtiva korraga ja mida oleks andnud/annaks klassikaline CIT. Ajaloo read kasutavad ajaloolise määra liugurit, prognoosiread iga aasta enda parameetreid. Tõlgenda ΔR-i koos märgistusega: ajalugu on staatiline (käitumiseta), prognoos käitumisega.</span></span></h2>
+    <div class="sub">Reageerib vasaku paneeli parameetritele ja ankruvalikule. Ajalugu = staatiline mikrosim (käitumiseta, laekumise ülempiir); prognoos = käitumiskiiludega.</div>
+    <div class="colstrip" id="colStrip"></div>
+    <div class="ytwrap" id="ytWrap"></div>
+    <div class="hint" style="margin-top:12px;line-height:1.7">
+      <b style="color:var(--mut)">Veergude selgitus:</b>
+      Maksustatav kasumibaas = kogu positiivne kasum pärast osaluse vabastust ja kahjumi edasikandmist (see, mida klassikaline kord maksustaks; DPT maksustab sellest ainult jaotatud osa).
+      Efektiivne baas = sama baas pärast käitumisreaktsioone (varjamine, shifting, investeeringu-drag) — ainult prognoosis.
+      Efektiivne määr = maksulaekumine ÷ kasumibaas: näitab, kui suure osa kogukasumist riik tegelikult kätte saab kummaski süsteemis.
+      <br><b style="color:var(--mut)">Märkused:</b>
+      2021 (mõlemad ankrud) ja 2022 (ühine) T_klassik on tuletatud hinnangud, kuna mikrosimi T_kehtiv nende aastate kohta on veel jooksutamata.
+      2025 on üleminekurida: MTA laekumine kinnitatud, T_klassik staatiline ekstrapolatsioon.
+      Ajaloo T_klassik ja ΔR kasutavad „ajalooliste aastate CIT määra” liugurit (vaikimisi 18% — tegelik segamäär 20/80 + 14/86 ajastul); mikrosimi T_kehtiv on määrast sõltumatu. Ajaloo ΔR = mudel-vs-mudel (T_klassik − mikrosimi T_kehtiv), et metoodika oleks mõlemal poolel sama — seetõttu ei võrdu see täpselt tabeli T_klassik − MTA veergudega. Prognoosiaasta 🔓/🔒 lülitab aasta luku: lukus aasta ei muutu liigutamisel ega massmuudatustel. ✱ tähistab aastat, mille seadistused erinevad aktiivse stsenaariumi vaikeväärtustest.
+    </div>
+  </div>
+</section>
+
+<section id="pgAudit" hidden>
+  <div class="card full">
+    <h2>Arvutuskäik — kuidas mudel tulemuseni jõuab</h2>
+    <div class="sub">Auditivaade: valitud prognoosiaasta arvutusahel. Lihtne vaade näitab ainult sammude ahelat; eksperdi vaade lisab valemid, sisendite lahutuse, veadiagnostika ja lihtsustuste loetelu. See leht ei muuda midagi — ta ainult näitab.</div>
+    <div class="viewtgl"><button id="amSimple" class="on">Lihtne vaade</button><button id="amExpert">Eksperdi vaade</button></div>
+    <div class="ctl" id="audYears" style="display:flex;gap:6px;align-items:center;margin-bottom:14px"></div>
+    <div class="grid" style="margin-top:0">
+      <div class="card adv" style="margin:0">
+        <h2 style="font-size:14px">A · Tegelikud sisendandmed</h2>
+        <div class="sub">Väärtused andmeallikatest — ei sõltu liuguritest</div>
+        <div id="audA"></div>
+        <div class="hint" id="audWarn" style="margin-top:10px"></div>
+      </div>
+      <div class="card adv" style="margin:0">
+        <h2 style="font-size:14px">B · Kasutaja eeldused (valitud aasta)</h2>
+        <div class="sub">Liuguritelt tulevad väärtused, mis seda aastat juhivad</div>
+        <div id="audB"></div>
+      </div>
+      <div class="card full" style="margin:0">
+        <h2 style="font-size:14px">C · Mudeli arvutused samm-sammult</h2>
+        <div class="sub">Iga samm: valem, sisendid, tulemus</div>
+        <div id="audC" style="max-width:760px"></div>
+      </div>
+      <div class="card adv" style="margin:0">
+        <h2 style="font-size:14px">Prognoosi koostis</h2>
+        <div class="sub">Tundlikkuspõhine hinnang: kui suure osa ΔR-i ebakindlusest kannab iga kategooria (iga sisendi ±10% häiritus, panused summeeritud kategooriate kaupa)</div>
+        <div class="sbar" id="audBar"></div>
+        <div class="slegend" id="audLegend"></div>
+        <div class="hint">See on heuristiline mõõdik: ta ei ütle, kui suur osa TASEMEST on „päris", vaid kui suur osa tulemuse LIIKUMISEST sõltub igast kategooriast. Mida suurem sinine+oranž osa, seda rohkem on tulemus eelduste, mitte andmete küsimus.</div>
+      </div>
+      <div class="card adv" style="margin:0">
+        <h2 style="font-size:14px">Mudeli eeldused ja lihtsustused</h2>
+        <div class="sub">Kohad, kus mudel ei kasuta tegelikke andmeid, vaid matemaatilist lihtsustust</div>
+        <div id="audS" style="font-size:12.5px;line-height:1.7"></div>
+      </div>
+
+      <div class="card full adv" style="margin:0">
+        <h2 style="font-size:14px">Miks prognoos erineb tegelikkusest? <span class="info" tabindex="0">i<span class="tip">Automaatne diagnoos: võrdleb mudeli alt-üles hinnangut MTA tegeliku laekumisega igal aastal, kus mõlemad on olemas, ja pakub PÕHJENDATUD HINNANGU, millest erinevus võib tuleneda. Tulevaste aastate tegelikke väärtusi veel pole — nende kohta loetletakse riskitegurid.</span></span></h2>
+        <div class="sub">Kõik põhjused allpool on hinnangulised, mitte faktid — märgistus näitab, kui kindel iga omistus on ja millel see põhineb.</div>
+        <div class="kpis" id="dgKpis" style="margin-bottom:12px"></div>
+        <div id="dgRows"></div>
+        <div class="hint" id="dgNote" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card adv" style="margin:0">
+        <h2 style="font-size:14px">Vea panuste analüüs <span class="info" tabindex="0">i<span class="tip">Hinnanguline jaotus: milline tegur veab viga kummaski suunas ja kui kindlalt saab seda väita. Täpset lahutust ei ole matemaatiliselt võimalik teha (tegurid kattuvad ja tasakaalustavad üksteist), seega on suurused vahemikena ja iga rea alus on kirjas.</span></span></h2>
+        <div class="sub">+ = mudel hindab üle · − = alahindab · vahemik = aastati erinev</div>
+        <table><thead><tr><th style="text-align:left">Tegur</th><th>Hinnanguline mõju veale</th><th>Kindlus</th></tr></thead><tbody id="dgFactors"></tbody></table>
+        <div class="hint" id="dgBasis" style="margin-top:8px"></div>
+      </div>
+
+      <div class="card adv" style="margin:0">
+        <h2 style="font-size:14px">Paranduse soovitused <span class="info" tabindex="0">i<span class="tip">Automaatselt diagnoosist tuletatud arendused, järjestatud mõju/keerukuse suhte järgi: mida teha, et prognoosiviga väheneks kõige rohkem kõige väiksema vaevaga.</span></span></h2>
+        <div class="sub">Järjestatud: parim mõju/keerukuse suhe eespool</div>
+        <div id="dgRecs"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pgMet" hidden>
+  <div class="card full">
+    <h2>Eksperdi vaade — metoodika võrdlus, tundlikkus ja detailne valideerimine</h2>
+    <div class="sub">Mõlemad meetodid jooksevad alati paralleelselt. Vaikimisi on kasutusel kassa-trend; struktuurne saab vaikimisi meetodiks alles siis, kui ta näitab järjepidevalt väiksemat prognoosiviga. Allpool on eeldused, mõju lõpptulemusele ja automaatne ajalooline test.</div>
+    <div class="grid" style="margin-top:0">
+      <div class="card full" style="margin:0">
+        <h2 style="font-size:14px">Baseline Explorer — miks lähtetasemed erinevad? <span class="info" tabindex="0">i<span class="tip">Lahutab 2025. aasta lähtetasemete 127 M€ vahe komponentideks. Kassa-trendi tase on tegelik laekumine (fakt); struktuurse taseme komponendid on TSD/JITM andmetest, aga 2025 kassa komponentlahutus ise on osalt tuletatud — märgistus näitab, mis on fakt ja mis hinnang.</span></span></h2>
+        <div id="blExp"></div>
+      </div>
+      <div class="card" style="margin:0">
+        <h2 style="font-size:14px">Meetodite eeldused</h2>
+        <table><thead><tr><th style="text-align:left"></th><th style="text-align:left">Kassa-trend</th><th style="text-align:left">Struktuurne</th></tr></thead>
+        <tbody style="font-family:'IBM Plex Sans';font-size:12px">
+          <tr><td style="text-align:left;font-weight:600">Lähtetase 2025</td><td style="text-align:left">1 125,3 M€ (kassalaekumine)</td><td style="text-align:left">998 M€ (785 div + 140 pangad + 73 väikesed)</td></tr>
+          <tr><td style="text-align:left;font-weight:600">Ettejaotamine</td><td style="text-align:left">sees lähtetasemes (paisutus ~+13%)</td><td style="text-align:left">välja puhastatud (struktuurne voog = 2023/2025 keskmine)</td></tr>
+          <tr><td style="text-align:left;font-weight:600">Pangad</td><td style="text-align:left">kasvavad kogu trendi sees SKP-ga</td><td style="text-align:left">eraldi rida; püsiv tase või SKP-ga (lüliti)</td></tr>
+          <tr><td style="text-align:left;font-weight:600">Allikad</td><td style="text-align:left">riigieelarve laekumiste fail</td><td style="text-align:left">JITM komponentlahutus + TSD lisa 7 (eff määr 27,9%, ristkontroll −0,5%)</td></tr>
+          <tr><td style="text-align:left;font-weight:600">Jaotamise kohandus</td><td style="text-align:left">kogu baseline\u2019ile</td><td style="text-align:left">ainult dividendikomponendile</td></tr>
+        </tbody></table>
+      </div>
+      <div class="card" style="margin:0">
+        <h2 style="font-size:14px">Mõju lõppprognoosile (aktiivsed liugurid)</h2>
+        <div class="sub">Sama T_klassik, kaks baseline\u2019i → kaks ΔR-i</div>
+        <div class="cwrap"><canvas id="cMet"></canvas></div>
+        <div id="metImpact" style="font-size:12.5px;margin-top:8px"></div>
+        <table style="margin-top:10px"><thead><tr><th style="text-align:left">2030 baseline</th><th>Laekumine (M€)</th></tr></thead><tbody id="metCmp"></tbody></table>
+        <div class="ctl" style="gap:10px;margin-top:8px;flex-wrap:wrap">
+          <label style="font-size:12px;color:var(--mut)">RM 2030:</label><input type="number" id="ekRm30" style="width:90px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:#8fc1ff;font:600 12px var(--mono);padding:5px 8px" placeholder="M€">
+          <label style="font-size:12px;color:var(--mut)">Eesti Pank 2030:</label><input type="number" id="ekEp30" style="width:90px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:#8fc1ff;font:600 12px var(--mono);padding:5px 8px" placeholder="M€">
+        </div>
+      </div>
+    <div class="card" style="margin:0">
+      <h2>Tundlikkus — ΔR 2030 <span class="info" tabindex="0">i<span class="tip">Iga lahter = ΔR 2030, kui CIT määr (read) ja kasumi varjamine (veerud) oleksid vastavatel väärtustel, muud parameetrid liuguritest. Roheline = reform annab lisatulu, punane = kaotab. Klõps lahtril seab need väärtused kõigile lukustamata aastatele.</span></span></h2>
+      <div class="sub">CIT määr × kasumi varjamine (rakendub kõigile lukustamata aastatele); muud parameetrid liuguritest. Klõps lahtril seab liugurid.</div>
+      <div class="hm" id="hm"></div>
+      <div class="hint">Roheline = laekumine kasvab · punane = reform kaotaks tulu</div>
+    </div>
+    <div class="card" style="margin:0">
+      <h2>Valideering — kas mudelit tohib uskuda? <span class="info" tabindex="0">i<span class="tip">Võrdleb mudeli alt-üles hinnangut kehtiva korra laekumisele MTA tegeliku laekumisega. Kui viga on ±5–10% sees, tohib klassikalise korra stsenaariumi tõlgendada; kui mitte, on eespool olevad numbrid ebausaldusväärsed. See tabel EI sõltu liuguritest — see mõõdab andmekonveieri kvaliteeti.</span></span></h2>
+      <div class="sub">Alt-üles T_kehtiv vs MTA tegelik JIT. Värav: |viga| ≤ 5–10%.</div>
+      <table>
+        <thead><tr><th>Aasta</th><th>MTA tegelik</th><th>Mudel</th><th>Viga</th></tr></thead>
+        <tbody id="valBody"></tbody>
+      </table>
+      <div class="hint">JIT sisaldab ka pankade avansilist tulumaksu ja erisoodustusi, mida dividendiproksü ei püüa — kerge alahinnang 2023–24 on ootuspärane.</div>
+      <h2 style="font-size:13px;margin-top:14px">Tase 2 — õige sihtmärk: JIT dividendikomponent <span class="info" tabindex="0">i<span class="tip">JITM komponentlahutus näitab, et mudel modelleerib ainult dividendimaksu (lisa 7), mitte kogu JIT-i. Toorviga selle vastu on suur (+24…+34%), aga TSD-st mõõdetud efektiivse määraga korrigeerituna (2023: 23,4%; 2024: 22,0% — mudel kasutas 28,2%) jääb dividendiproksü enda viga väikeseks. Tase 1 hea tulemus oli kahe vea vastastikune kustumine.</span></span></h2>
+      <table><thead><tr><th>Aasta</th><th>Lisa 7 tegelik</th><th>Mudel (28,2%)</th><th>Toorviga</th><th>Määrakorrig.</th><th>Jääkviga</th></tr></thead><tbody id="val2Body"></tbody></table>
+      <div class="hint">2020 mõõdetud määr puudub (vaja 2020 TSD faili). Kassa vs tekkepõhine: TSD deklaratsioonid 2024 = 1 087 M€, kassa 759 — vahe (~213 M€) voolas 2025 jaanuari (ettejaotamine).</div>
+    </div>
+      <div class="card full" style="margin:0">
+        <h2 style="font-size:14px">2026 test — mudel valideerib end ise <span class="info" tabindex="0">i<span class="tip">Sisesta 2026 tegelikud kuulaekumised (riigieelarve fail, uueneb kuu 2. kuupäeval) siniste lahtritena. Mõlema baseline\u2019i kuuprognoosid tulevad aastaprognoosist × hooajaline profiil (TSD 2023/2025 deklaratsioonide sesoonsus +1 kuu kassanihe; pangad kvartaalselt; 🟠 hinnang). Kumulatiivne võrdlus ütleb, kumb meetod on tegelikkusele lähemal — see ONGI üleminekureegli test (b).</span></span></h2>
+        <div class="sub">Teadaolev fakt: jaanuar–mai 2026 kassalaekumine kokku = <b>349,7 M€</b> (riigieelarve fail). Kuine jaotus pole veel sisestatud.</div>
+        <div class="ctl" style="gap:8px">
+          <button class="ghost" id="trFill">Täida jaan–mai (349,7 M€, hooajalise jaotusega, hinnang)</button>
+          <button class="ghost" id="trClear">Tühjenda tegelikud</button>
+        </div>
+        <div class="grid" style="margin-top:10px">
+          <div>
+            <table><thead><tr><th>Kuu</th><th>Tegelik (M€)</th><th>Trend</th><th>Strukt</th></tr></thead><tbody id="trBody"></tbody></table>
+            <div class="hint" style="margin-top:8px">Sisesta väärtused ja vajuta Tab/Enter — kõik arvutub ümber. Sisestused salvestuvad JSON-eksporti.</div>
+          </div>
+          <div>
+            <div class="cwrap" style="height:230px"><canvas id="cTrack"></canvas></div>
+            <div id="trVerdict" style="font-size:12.5px;margin-top:10px"></div>
+            <div class="ctl" style="gap:10px;margin-top:12px;flex-wrap:wrap">
+              <label style="font-size:12px;color:var(--mut)">RM 2026 prognoos:</label><input type="number" id="ekRm26" style="width:90px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:#8fc1ff;font:600 12px var(--mono);padding:5px 8px" placeholder="M€">
+              <label style="font-size:12px;color:var(--mut)">Eesti Pank 2026:</label><input type="number" id="ekEp26" style="width:90px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:#8fc1ff;font:600 12px var(--mono);padding:5px 8px" placeholder="M€">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card full" style="margin:0">
+        <h2 style="font-size:14px">Automaatne ajalooline test (pseudo üks-samm-ette, 2020–2024) <span class="info" tabindex="0">i<span class="tip">Mõlema meetodiga tehakse iga aasta kohta prognoos eelmise aasta tegelikest andmetest, kasutades TEGELIKKU nominaalset SKP kasvu (mitte eeldust), ja võrreldakse tegeliku laekumisega. See on aus võrdlus, sest kumbki meetod ei näe prognoositavat aastat ette.</span></span></h2>
+        <table><thead><tr><th>Aasta</th><th>Tegelik</th><th>Trend-prognoos</th><th>viga %</th><th>Strukt-prognoos</th><th>viga %</th><th>sh div-komponendi viga</th></tr></thead><tbody id="metBt"></tbody></table>
+        <div class="verdict" style="margin-top:12px;display:flex;gap:14px;align-items:center">
+          <div><div style="font:600 10.5px var(--mono);letter-spacing:1px;color:var(--dim);text-transform:uppercase">Seis</div><div id="metVerdict" style="font:600 22px var(--mono)"></div></div>
+          <div id="metVerdictTxt" style="font-size:12.5px;color:var(--mut)"></div>
+        </div>
+        <div class="hint" style="margin-top:10px"><b>Üleminekureegel:</b> struktuurne muutub vaikimisi meetodiks, kui (a) tema keskmine |viga| ajaloolises testis on trendist vähemalt 2 pp väiksem VÕI (b) esimene päris valideerimispunkt (2026 tegelik laekumine) langeb struktuurse prognoosi ±5% sisse ja trendi omast välja. Kuni selleni jääb vaikimisi kassa-trend ja struktuurne on märgistatud „katsetusel\u201d.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <footer>
+    <b>Andmeankrud:</b> MTA JIT 2019–2025 (riigieelarve laekumised; 2024 = 962,8 · 2025 = 1 125,3 M€, kinnitatud) · mikrosimulatsioon päris RIK avaandmetel (handoff v2; valideerimisviga −2,1% 2024) · KM baas tuletatud 2025 laekumisest (~4,2 mld €) · SKP ja palgafond ligikaudsed.
+    <br><b>Piirangud:</b> raamatupidamuslik ≠ maksustatav kasum · dividendiproksü · käitumuselastsused kirjandusest kinnistamata · üleminekuvaru suurus kohatäide · katvustegur ja tase-vs-ajastus dekompositsioon rakendamata · staatiline ajalugu = laekumise ülempiir. Prototüüp, mitte ametlik mõjuhinnang.
+  </footer>
+</main>
+</div>
+
+<script>
+/* ================= ANDMED ================= */
+const YRS = [...Array(12).keys()].map(i=>2019+i);            // 2019..2030
+const FY  = [2026,2027,2028,2029,2030];                       // prognoosiaastad
+const MTA = {2019:457,2020:449.5,2021:481.2,2022:596.1,2023:716.9,2024:962.8,2025:1125.3};
+const DR_HIST = {all:{2020:705,2021:1050,2022:1172,2023:839,2024:713},
+                 common:{2020:545,2021:841,2022:942,2023:651,2024:533}};
+const TK2024 = {all:1656, common:533+942.6};                  // M€
+const TKH = {all:   {2020:1178,2021:1531,2022:1836,2023:1555,2024:1656},
+             common:{2020:1019,2021:1322,2022:1606,2023:1367,2024:1476}};
+const TKH_EST = {all:[2021], common:[2021,2022]};
+/* Ajalooline ΔR kasutaja valitud ajaloolise määraga: T_klassik skaleeritakse 22%-lt ümber,
+   mikrosimi T_kehtiv (= TKH − DR_HIST, määrast sõltumatu) jääb samaks. */
+const drHist = (a,y) => TKH[a][y]/0.22*G.tauh - (TKH[a][y] - DR_HIST[a][y]);
+const KMBAAS25 = 4200/0.23, SKP24 = 39400, PALGAOSA = 0.47;
+const CFG = {H0:0.02, SUUR:0.5, TREF:0.15, KVH:2, KSH:2.5, KIM:0.2, KTM:0.1};
+const KM1 = 0.24, KM2 = 0.22, SOTS = 0.33, FYYS = 0.12;
+const VAL = [[2020,449.5,473.8],[2023,716.9,715.7],[2024,962.8,942.6]];
+/* JIT komponendid (JITM fail, M€): div = lisa 7, pank = krediidiasutuse avansiline, vaike = erisoodustused+kingitused+muud */
+const JITK = {2019:{div:415.5,pank:44.5,vaike:49.1,kokku:509.1},2020:{div:367.6,pank:38.9,vaike:42.9,kokku:449.5},
+  2021:{div:385.6,pank:45.5,vaike:50.0,kokku:481.2},2022:{div:486.0,pank:50.5,vaike:59.7,kokku:596.1},
+  2023:{div:533.4,pank:118.9,vaike:64.6,kokku:716.9},2024:{div:759.4,pank:133.8,vaike:69.6,kokku:962.8}};
+const SKPG = {2020:-0.0286,2021:0.1544,2022:0.1529,2023:0.0414,2024:0.0451}; // tegelik nominaalkasv
+/* Struktuurse baseline'i 2025 komponendid: div = struktuurne voog 2815 × eff 27,9% (TSD ristkontroll −0,5%); pank = hinnang; vaike = trend */
+const STRUKT = {div:785, pank:140, vaike:73};
+const EFF_DIV = {2023:0.234, 2024:0.220, 2025:0.279};  // TSD: 7200 ÷ 7008
+/* Tase 2 valideering: mudel vs JIT DIVIDENDIKOMPONENT (õige sihtmärk); eff = mõõdetud määr korrektsiooniks */
+const VAL2 = [[2020,367.6,473.8,null],[2023,533.4,715.7,0.234],[2024,759.4,942.6,0.220]];
+/* 2026 kuine kassaprofiil: TSD 2023+2025 deklaratsioonide sesoonsus +1 kuu; pangad kvartaalselt; väikesed ühtlaselt (🟠 hinnang) */
+const KUUW = [0.1311,0.0373,0.0699,0.1615,0.0644,0.1057,0.0942,0.0565,0.0842,0.0474,0.0557,0.0922];
+const TEGELIK_5K = 349.7;  // riigieelarve fail, jaan–mai 2026
+const KUUD = ['jaan','veebr','märts','apr','mai','juuni','juuli','aug','sept','okt','nov','dets'];
+
+/* Mõju-% (0..1) → sisemine parameeter: eh = vh·2 · es = sh·2,5 · ψ = im·0,2 · λ = tm·0,1 */
+const SCEN = {
+  kons:{tau:.22,vh:.125,sh:.16,im:.10,tm:.10,eff:.97,g:.05,wg:.055,jaotus:0},
+  baas:{tau:.22,vh:.25, sh:.32,im:.25,tm:.20,eff:.95,g:.05,wg:.055,jaotus:0},
+  agr: {tau:.22,vh:.50, sh:.60,im:.50,tm:.40,eff:.92,g:.05,wg:.055,jaotus:0}
+};
+const GDEF = {varu:30000,ny:5,ulem:false,tauh:0.18,blMode:'trend',blPank:false};
+const freshG = () => ({...GDEF, kuud2026:Array(12).fill(null), eksp:{rm26:null,ep26:null,rm30:null,ep30:null}});
+let scen='baas', anchor='common', selYear=2026;
+let params={}, locks={}, G=freshG();
+function resetAllYears(){ FY.forEach(y=>{ params[y]={...SCEN[scen]}; locks[y]=false; }); }
+resetAllYears();
+
+/* ================= MUDEL ================= */
+function run(anch, over, cfg, scl){
+  cfg = cfg||CFG; scl = scl||{base:1,dpt:1};
+  const base24 = TK2024[anch]/0.22*scl.base;
+  const P = y => over ? {...params[y], ...over} : params[y];
+  const q0 = P(2026);
+  let base = base24*(1+q0.g), statB = base;                   // 2025
+  let dpt = MTA[2025]*scl.dpt, cons0=KMBAAS25, consR=KMBAAS25;
+  let sd = STRUKT.div*scl.dpt, sp = STRUKT.pank*scl.dpt, sv = STRUKT.vaike*scl.dpt;
+  let t0prev = (G.blMode==='strukt') ? sd+sp+sv : dpt;
+  let pf0 = SKP24*(1+q0.g)*PALGAOSA, pfR = pf0;
+  const out = {dr:{},tk:{},t0:{},t0t:{},t0s:{},tot0:{},totR:{},sb:{},eb:{},prevB:{},prevD:{},hh:{},ss:{},b25:base,cum:0,parts:null};
+  for(const y of FY){
+    const q = P(y);
+    const h = cfg.H0 + q.vh*cfg.KVH*q.tau;
+    const s = cfg.SUUR*q.sh*cfg.KSH*Math.max(0,q.tau-cfg.TREF);
+    const wgR = q.wg - q.tm*cfg.KTM*q.tau;
+    out.prevB[y]=base; out.prevD[y]=t0prev; out.hh[y]=h; out.ss[y]=s;
+    base  *= (1+q.g - q.im*cfg.KIM*q.tau);
+    statB *= (1+q.g);
+    out.sb[y]=statB; out.eb[y]=base*(1-h-s);
+    dpt   *= (1+q.g)*(1+q.jaotus);
+    sd *= (1+q.g)*(1+q.jaotus); sp *= (G.blPank?(1+q.g):1); sv *= (1+q.g);
+    const t0 = (G.blMode==='strukt') ? sd+sp+sv : dpt;
+    out.t0t[y]=dpt; out.t0s[y]=sd+sp+sv; t0prev=t0;
+    cons0*=(1+q.wg); consR*=(1+wgR); pf0*=(1+q.wg); pfR*=(1+wgR);
+    const tk = base*(1-h-s)*q.tau*q.eff;
+    const tr = (G.ulem && y-2025<=G.ny) ? G.varu*q.tau/G.ny : 0;
+    const rate = y<=2028?KM1:KM2;
+    const km0=cons0*rate*q.eff, kmR=consR*rate*q.eff;
+    const l0=pf0*(SOTS+FYYS)*q.eff, lR=pfR*(SOTS+FYYS)*q.eff;
+    out.tk[y]=tk+tr; out.t0[y]=t0; out.dr[y]=tk+tr-t0;
+    out.tot0[y]=t0+km0+l0; out.totR[y]=tk+tr+kmR+lR;
+    out.cum += out.totR[y]-out.tot0[y];
+    if(y===2030){
+      out.parts = {lagi:statB*q.tau,
+        invest:(statB-base)*q.tau,
+        varj:base*h*q.tau,
+        shift:base*s*q.tau,
+        kogumine:base*(1-h-s)*q.tau*(1-q.eff),
+        tk, tr, dpt:t0};
+    }
+  }
+  return out;
+}
+
+/* ================= UI abifunktsioonid ================= */
+const nf = v => new Intl.NumberFormat('et-EE',{maximumFractionDigits:0}).format(Math.round(v));
+const sign = v => (v>=0?'+':'−')+nf(Math.abs(v));
+const pct = v => (v*100).toFixed(1).replace('.',',')+'%';
+const pct0 = v => Math.round(v*100)+' %';
+const $ = id => document.getElementById(id);
+
+const YEAR_SLIDERS = {tau:pct,vh:pct0,sh:pct0,im:pct0,tm:pct0,eff:pct,g:pct,wg:pct,jaotus:pct};
+function isMod(y){ const d=SCEN[scen]; return Object.keys(d).some(k=>Math.abs(d[k]-params[y][k])>1e-9); }
+
+function buildYrSel(){
+  $('yrSel').innerHTML = FY.map(y=>{
+    const st = locks[y] ? '🔒' : (isMod(y) ? '<span class="modmark">✱</span>' : '<span style="color:var(--dim)">●</span>');
+    return `<button data-y="${y}" class="${y===selYear?'on':''}" aria-pressed="${y===selYear}"><span>${y}</span><span class="st">${st}</span></button>`;
+  }).join('');
+  $('yrSel').querySelectorAll('button').forEach(b=>b.onclick=()=>{ selYear=+b.dataset.y; syncSliders(); });
+}
+
+function syncSliders(){
+  const q=params[selYear], lk=locks[selYear];
+  for(const k in YEAR_SLIDERS){
+    $(k).value=q[k]; $('o_'+k).textContent=YEAR_SLIDERS[k](+q[k]);
+    $(k).disabled=lk; $(k).closest('.ctl').classList.toggle('dis',lk);
+  }
+  $('tauh').value=G.tauh; $('o_tauh').textContent=pct(G.tauh);
+  $('varu').value=G.varu; $('o_varu').textContent=nf(G.varu)+' M€';
+  $('ny').value=G.ny; $('o_ny').textContent=G.ny+' a';
+  $('ulem').checked=G.ulem;
+  $('blPank').checked=G.blPank;
+  $('pankTgl').style.opacity = G.blMode==='strukt' ? 1 : .35;
+  document.querySelectorAll('[data-bl]').forEach(b=>b.classList.toggle('on',b.dataset.bl===G.blMode));
+  $('varuCtl').style.opacity=$('nyCtl').style.opacity=G.ulem?1:.35;
+  $('lockYr').textContent=(lk?'🔒 Ava lukk — ':'🔓 Lukusta ')+selYear;
+  $('yrHint').textContent=lk
+    ? 'Aasta on lukus: liugurid ega massmuudatused seda ei muuda. Ava lukk muutmiseks.'
+    : 'Liugurid näitavad valitud aasta väärtusi. Muudatus rakendub kõigile lukustamata aastatele.';
+  $('opPrev').disabled = selYear===2026||lk;
+  $('opNext').disabled = selYear===2030||lk;
+  $('opResetYr').disabled = lk;
+  buildYrSel();
+}
+
+function markCustom(){
+  const diff = FY.some(isMod) || G.varu!==GDEF.varu || G.ny!==GDEF.ny || G.ulem!==GDEF.ulem || G.tauh!==GDEF.tauh || G.blMode!==GDEF.blMode || G.blPank!==GDEF.blPank;
+  $('customNote').textContent = diff?'▸ kohandatud parameetrid':'';
+  $('tagScen').textContent = ({kons:'Konservatiivne',baas:'Baas',agr:'Agressiivne'})[scen]+(diff?' (koh.)':'');
+}
+
+/* ================= GRAAFIKUD ================= */
+Chart.defaults.color='#8a93a6'; Chart.defaults.borderColor='#232833';
+Chart.defaults.font.family="'IBM Plex Mono',monospace"; Chart.defaults.font.size=11;
+const noAnim = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const tt = {backgroundColor:'#1d212b',borderColor:'#262b36',borderWidth:1,titleFont:{family:"'IBM Plex Sans'"},padding:10,
+  callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y===null?'—':nf(c.parsed.y)+' M€'}`}};
+
+const cCorr = new Chart($('cCorridor'),{type:'line',
+ data:{labels:YRS,datasets:[
+  {label:'Ülemine (kõik firmad)',data:[],borderColor:'rgba(143,193,255,.55)',borderWidth:1.5,pointRadius:0,tension:.25},
+  {label:'Alumine (ühine pop.)',data:[],borderColor:'rgba(143,193,255,.55)',borderWidth:1.5,pointRadius:0,tension:.25,
+   fill:'-1',backgroundColor:'rgba(79,143,247,.13)'},
+  {label:'Aktiivne ankur',data:[],borderColor:'#f0a84b',borderWidth:2.5,pointRadius:0,tension:.25,borderDash:[]},
+  {label:'Ajalugu · kõik firmad',data:[],borderColor:'transparent',pointBackgroundColor:'#8fc1ff',pointRadius:4,showLine:false},
+  {label:'Ajalugu · ühine',data:[],borderColor:'transparent',pointBackgroundColor:'#4f8ff7',pointRadius:4,pointStyle:'rectRot',showLine:false},
+ ]},
+ options:{responsive:true,maintainAspectRatio:false,animation:!noAnim,
+  interaction:{mode:'index',intersect:false},
+  plugins:{tooltip:tt,legend:{labels:{boxWidth:14,boxHeight:2,font:{family:"'IBM Plex Sans'",size:11}}}},
+  scales:{y:{title:{display:true,text:'ΔR (M€)'},grid:{color:c=>c.tick.value===0?'#3a4152':'#232833'}},x:{grid:{display:false}}}}});
+
+const cWater = new Chart($('cWater'),{type:'bar',
+ data:{labels:['Staatiline lagi','Investeeringu-drag','Varjamine','Shifting','Kogumiskadu','T_klassik netto','− T_kehtiv (DPT)','ΔR 2030'],
+  datasets:[{data:[],backgroundColor:[],borderRadius:4,borderSkipped:false}]},
+ options:{responsive:true,maintainAspectRatio:false,animation:!noAnim,
+  plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:c=>{const[a,b]=c.raw;return ` ${sign(b-a)} M€`}}}},
+  scales:{y:{title:{display:true,text:'M€'}},x:{ticks:{font:{size:9.5},maxRotation:45,minRotation:45},grid:{display:false}}}}});
+
+const cTot = new Chart($('cTotal'),{type:'line',
+ data:{labels:FY,datasets:[
+  {label:'Baseline (DPT jätkub)',data:[],borderColor:'#4f8ff7',backgroundColor:'#4f8ff7',borderWidth:2,pointRadius:3,tension:.25},
+  {label:'Reform (klassikaline CIT)',data:[],borderColor:'#f0a84b',backgroundColor:'#f0a84b',borderWidth:2,pointRadius:3,tension:.25}]},
+ options:{responsive:true,maintainAspectRatio:false,animation:!noAnim,interaction:{mode:'index',intersect:false},
+  plugins:{tooltip:tt,legend:{labels:{boxWidth:14,boxHeight:2,font:{family:"'IBM Plex Sans'",size:11}}}},
+  scales:{y:{title:{display:true,text:'Kogutulu (M€)'}},x:{grid:{display:false}}}}});
+
+/* heatmap: τ × varjamise mõju-% */
+const TAUS=[0.15,0.18,0.20,0.22,0.25], VHS=[0,0.25,0.5,0.75,1];
+function hmColor(v){
+  const t=Math.max(-1,Math.min(1,v/600));
+  return t>=0 ? `rgba(71,201,143,${0.12+0.5*t})` : `rgba(229,100,108,${0.12+0.5*(-t)})`;
+}
+function buildHM(){
+  const el=$('hm'); el.innerHTML='';
+  el.insertAdjacentHTML('beforeend','<div class="h">τ \\ varjamine</div>'+VHS.map(e=>`<div class="h">${Math.round(e*100)}%</div>`).join(''));
+  const qs=params[selYear];
+  for(const t of TAUS){
+    el.insertAdjacentHTML('beforeend',`<div class="h">${(t*100).toFixed(0)}%</div>`);
+    for(const e of VHS){
+      const v=run(anchor,{tau:t,vh:e}).dr[2030];
+      const sel=(Math.abs(qs.tau-t)<1e-9&&Math.abs(qs.vh-e)<1e-9)?' sel':'';
+      el.insertAdjacentHTML('beforeend',
+       `<div class="c${sel}" role="button" tabindex="0" style="background:${hmColor(v)};color:${v>=0?'#bfe9d6':'#f3c2c6'}"
+         data-t="${t}" data-e="${e}" title="τ=${(t*100)}%, varjamine ${Math.round(e*100)}% — rakendub kõigile lukustamata aastatele">${sign(v)}</div>`);
+    }
+  }
+  el.querySelectorAll('.c').forEach(c=>{
+    const go=()=>{
+      FY.forEach(y=>{ if(!locks[y]){ params[y].tau=+c.dataset.t; params[y].vh=+c.dataset.e; } });
+      syncSliders(); render();
+    };
+    c.onclick=go; c.onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();go();}};
+  });
+}
+
+/* valideering */
+$('valBody').innerHTML = VAL.map(([y,a,m])=>{
+  const e=m/a-1, cls=Math.abs(e)<=0.05?'ok':'warn';
+  return `<tr><td>${y}</td><td>${nf(a)}</td><td>${nf(m)}</td><td class="${cls}">${(e*100).toFixed(1).replace('.',',')} %</td></tr>`;
+}).join('');
+
+/* Tase 2 valideering */
+$('val2Body').innerHTML = VAL2.map(([y,teg,mud,eff])=>{
+  const raw=(mud/teg-1)*100;
+  const korr = eff? mud*eff/0.28205 : null;
+  const je = korr? (korr/teg-1)*100 : null;
+  return `<tr><td>${y}</td><td>${nf(teg)}</td><td>${nf(mud)}</td>
+    <td class="neg">+${raw.toFixed(1).replace('.',',')} %</td>
+    <td>${korr?nf(korr):'—'}</td>
+    <td class="${je===null?'':(Math.abs(je)<=15?'ok':'warn')}">${je===null?'—':(je>=0?'+':'\u2212')+Math.abs(je).toFixed(1).replace('.',',')+' %'}</td></tr>`;
+}).join('');
+
+/* ================= METOODIKA VÕRDLUS ================= */
+const cMet = new Chart($('cMet'),{type:'line',
+ data:{labels:[2025,...FY],datasets:[
+  {label:'Kassa-trend',data:[],borderColor:'#4f8ff7',backgroundColor:'#4f8ff7',borderWidth:2,pointRadius:3,tension:.2},
+  {label:'Struktuurne',data:[],borderColor:'#f0a84b',backgroundColor:'#f0a84b',borderWidth:2,pointRadius:3,tension:.2,borderDash:[6,4]}]},
+ options:{responsive:true,maintainAspectRatio:false,animation:!noAnim,interaction:{mode:'index',intersect:false},
+  plugins:{tooltip:tt,legend:{labels:{boxWidth:14,boxHeight:2,font:{family:"'IBM Plex Sans'",size:11}}}},
+  scales:{y:{title:{display:true,text:'DPT baseline (M€)'}},x:{grid:{display:false}}}}});
+
+function buildMet(r){
+  cMet.data.datasets[0].data=[MTA[2025],...FY.map(y=>r.t0t[y])];
+  cMet.data.datasets[1].data=[STRUKT.div+STRUKT.pank+STRUKT.vaike,...FY.map(y=>r.t0s[y])];
+  cMet.update('none');
+  const drT=r.tk[2030]-r.t0t[2030], drS=r.tk[2030]-r.t0s[2030];
+  $('metImpact').innerHTML=`ΔR 2030 kassa-trendiga: <b class="${drT>=0?'pos':'neg'}" style="font-family:var(--mono)">${sign(drT)} M€</b> · struktuursega: <b class="${drS>=0?'pos':'neg'}" style="font-family:var(--mono)">${sign(drS)} M€</b> — vahe <b style="font-family:var(--mono)">${sign(drS-drT)} M€</b> tuleb tervenisti lähtetaseme paisutusest, mitte kasvueeldusest.`;
+  // pseudo-backtest tegeliku SKP kasvuga
+  let sT=0,sS=0,rows='';
+  for(const y of [2020,2021,2022,2023,2024]){
+    const g=SKPG[y], p=JITK[y-1], a=JITK[y];
+    const pT=p.kokku*(1+g);
+    const pS=p.div*(1+g)+p.pank+p.vaike*(1+g);
+    const eT=(pT/a.kokku-1)*100, eS=(pS/a.kokku-1)*100;
+    const eD=(p.div*(1+g)/a.div-1)*100;
+    sT+=Math.abs(eT); sS+=Math.abs(eS);
+    const f=v=>(v>=0?'+':'\u2212')+Math.abs(v).toFixed(1).replace('.',',')+' %';
+    rows+=`<tr><td>${y}</td><td>${nf(a.kokku)}</td><td>${nf(pT)}</td><td class="${Math.abs(eT)<=10?'ok':'warn'}">${f(eT)}</td><td>${nf(pS)}</td><td class="${Math.abs(eS)<=10?'ok':'warn'}">${f(eS)}</td><td class="${Math.abs(eD)<=10?'ok':'warn'}">${f(eD)}</td></tr>`;
+  }
+  const maeT=sT/5, maeS=sS/5;
+  rows+=`<tr class="sum"><td>MAE</td><td></td><td></td><td>${maeT.toFixed(1).replace('.',',')} %</td><td></td><td>${maeS.toFixed(1).replace('.',',')} %</td><td></td></tr>`;
+  $('metBt').innerHTML=rows;
+  buildExplorer(); buildTracker(r);
+  // 2030 võrdlustabel (trend / strukt / eksperdid)
+  const cmp=[['Kassa-trend',r.t0t[2030]],['Struktuurne',r.t0s[2030]],
+             ['Rahandusministeerium',G.eksp.rm30],['Eesti Pank',G.eksp.ep30]];
+  $('metCmp').innerHTML=cmp.map(c=>`<tr><td style="text-align:left">${c[0]}</td><td>${c[1]==null?'<span class="eff">—</span>':nf(c[1])}</td></tr>`).join('');
+  const votis = maeS < maeT-2;
+  $('metVerdict').textContent = votis?'STRUKTUURNE EES':'VIIK';
+  $('metVerdict').style.color = votis?'var(--grn)':'var(--amber)';
+  $('metVerdictTxt').innerHTML = votis
+    ? 'Struktuurne meetod on ajaloolises testis järjepidevalt täpsem — võib kaaluda vaikimisi meetodiks tegemist.'
+    : `Ajaloolises testis on meetodid sisuliselt viigis (MAE ${maeT.toFixed(1).replace('.',',')}% vs ${maeS.toFixed(1).replace('.',',')}%) — mõlemad eksivad samadel erandaastatel (2023 intressišokk, 2024 ettejaotamine). Struktuurse eelis on (a) viga on LAHUTATAV komponentideks (div-veerg näitab, et dividendiosa prognoos on täpsem kui tervik) ja (b) lähtetaseme korrektsioon 2025+, mida ajalooline test ei mõõda. <b>Otsustav test: 2026 tegelik laekumine.</b> Seni jääb vaikimisi kassa-trend.`;
+}
+
+/* ================= BASELINE EXPLORER ================= */
+function buildExplorer(){
+  const kassaDiv = 1125.3 - STRUKT.pank - STRUKT.vaike;  // tuletatud
+  const rows=[
+    ['Dividendikomponent', kassaDiv, STRUKT.div, 'bl',
+     'Kassa pool 🟠 tuletatud (kogu − pangad − väikesed). Vahe seletus: +213 M€ jaanuari ülekanne (dets 2024 rekorddeklaratsioonid 1 422 M€ maksti jaanuaris 2025) miinus ~86 M€ dets 2025 → jaan 2026 nihe (🟠 hinnang) = netto ~+127 paisutus kassas.'],
+    ['Pankade avansiline tulumaks', STRUKT.pank, STRUKT.pank, 'o',
+     'Mõlemas sama 🟠 hinnang (140 M€; 2024 fakt oli 133,8). Tegelik 2025 komponentlahutus puudub — küsi JITM-i 2025 rida, siis muutub see rida faktiks.'],
+    ['Väikesed komponendid (erisoodustused jm)', STRUKT.vaike, STRUKT.vaike, 'o',
+     'Mõlemas sama 🟠 trend-hinnang (2024 fakt 69,6; stabiilne seeria).']
+  ];
+  const gap = 1125.3 - (STRUKT.div+STRUKT.pank+STRUKT.vaike);
+  const bar=(v,max,col)=>`<span class="dbar" style="width:${Math.max(2,Math.round(Math.abs(v)/max*70))}px;background:${col};display:inline-block;vertical-align:middle"></span>`;
+  $('blExp').innerHTML =
+    `<div class="arow"><span><span class="b g">🟢 fakt</span><span class="an">Kassa-trend lähtetase 2025 (tegelik laekumine)</span></span><span class="av">${nf(1125.3)} M€</span></div>
+     <div class="arow"><span><span class="b bl">🔵 komponendid</span><span class="an">Struktuurne lähtetase 2025 (785 + 140 + 73)</span></span><span class="av">${nf(998)} M€</span></div>
+     <div class="arow" style="border-bottom:2px solid var(--line)"><span><span class="an" style="font-weight:600">Vahe</span></span><span class="av" style="color:var(--amber)">−${nf(gap)} M€ (−${(gap/1125.3*100).toFixed(1).replace('.',',')}%)</span></div>
+     <div style="font:600 11px var(--mono);letter-spacing:1px;color:var(--dim);text-transform:uppercase;margin:12px 0 4px">Mille tõttu?</div>` +
+    rows.map(x=>{
+      const d=x[2]-x[1];
+      return `<div class="arow"><span><span class="b ${x[3]}">${x[3]==='bl'?'🔵':'🟠'}</span><span class="an">${x[0]}</span><span class="as"> ${x[4]}</span></span>
+        <span class="av">${nf(x[1])} → ${nf(x[2])} &nbsp;${d===0?'<span class="eff">±0</span>':`<span style="color:var(--amber)">${sign(d)}</span> ${bar(d,130,'var(--amber)')}`}</span></div>`;
+    }).join('') +
+    `<div class="hint" style="margin-top:8px">Kogu 127 M€ vahe istub dividendikomponendis — pankade ja väikeste komponentide read on mõlemas meetodis praegu identsed hinnangud. See tähendab: küsimus „kumb baseline on õige\u201d taandub küsimusele „kas 2025 dividendikassa oli struktuurne tase või ettejaotamisest paisutatud\u201d — mida testib 2026 jälgija allpool.</div>`;
+}
+
+/* ================= 2026 REALITY TRACKER ================= */
+const cTrack = new Chart($('cTrack'),{type:'line',
+ data:{labels:KUUD,datasets:[
+  {label:'Kumul. tegelik',data:[],borderColor:'#e8ebf2',backgroundColor:'#e8ebf2',borderWidth:2.5,pointRadius:4},
+  {label:'Kumul. trend',data:[],borderColor:'#4f8ff7',borderWidth:2,pointRadius:0,tension:.2},
+  {label:'Kumul. strukt',data:[],borderColor:'#f0a84b',borderWidth:2,pointRadius:0,tension:.2,borderDash:[6,4]}]},
+ options:{responsive:true,maintainAspectRatio:false,animation:!noAnim,interaction:{mode:'index',intersect:false},
+  plugins:{tooltip:tt,legend:{labels:{boxWidth:14,boxHeight:2,font:{family:"'IBM Plex Sans'",size:10.5}}}},
+  scales:{y:{title:{display:true,text:'M€'}},x:{grid:{display:false},ticks:{font:{size:9.5}}}}}});
+
+function buildTracker(r){
+  const aT=r.t0t[2026], aS=r.t0s[2026];
+  const mT=KUUW.map(w=>aT*w), mS=KUUW.map(w=>aS*w);
+  $('trBody').innerHTML = KUUD.map((k,i)=>`<tr>
+    <td style="text-align:left">${k}</td>
+    <td><input type="number" step="0.1" data-m="${i}" value="${G.kuud2026[i]??''}" style="width:84px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:#8fc1ff;font:600 12px var(--mono);padding:4px 7px;text-align:right"></td>
+    <td>${nf(mT[i])}</td><td>${nf(mS[i])}</td></tr>`).join('') +
+    `<tr class="sum"><td style="text-align:left">Aasta</td><td>${G.kuud2026.some(v=>v!=null)?nf(G.kuud2026.reduce((s,v)=>s+(v||0),0))+'*':'—'}</td><td>${nf(aT)}</td><td>${nf(aS)}</td></tr>`;
+  $('trBody').querySelectorAll('input').forEach(inp=>inp.addEventListener('change',()=>{
+    const i=+inp.dataset.m, v=inp.value.trim();
+    G.kuud2026[i]= v===''?null:+v;
+    render();
+  }));
+  // kumulatiivsed read + verdikt täidetud kuude peale
+  const filled = G.kuud2026.map((v,i)=>v!=null?i:null).filter(i=>i!=null);
+  let ca=0,ct=0,cs=0;
+  const cumA=[],cumT=[],cumS=[];
+  let ra=0,rt=0,rs=0;
+  KUUD.forEach((_,i)=>{ rt+=mT[i]; rs+=mS[i]; cumT.push(rt); cumS.push(rs);
+    if(G.kuud2026[i]!=null){ ra+=G.kuud2026[i]; cumA.push(ra); } else cumA.push(null); });
+  cTrack.data.datasets[0].data=cumA; cTrack.data.datasets[1].data=cumT; cTrack.data.datasets[2].data=cumS;
+  cTrack.update('none');
+  if(filled.length===0){
+    $('trVerdict').innerHTML='<span class="eff">Sisesta vähemalt üks kuu, et võrdlus käivituks.</span>';
+  } else {
+    filled.forEach(i=>{ca+=G.kuud2026[i]; ct+=mT[i]; cs+=mS[i];});
+    const eT=(ct/ca-1)*100, eS=(cs/ca-1)*100;
+    const closer = Math.abs(eS)<Math.abs(eT)?'STRUKTUURNE':'KASSA-TREND';
+    const wsum=filled.reduce((s,i)=>s+KUUW[i],0);
+    const fT=(aT*filled.length/12/ca-1)*100, fS=(aS*filled.length/12/ca-1)*100;
+    const sameOrder = (Math.abs(fS)<Math.abs(fT)) === (Math.abs(eS)<Math.abs(eT));
+    $('trVerdict').innerHTML=`Täidetud ${filled.length} kuud: tegelik <b style="font-family:var(--mono)">${nf(ca)}</b> M€ · trend prognoosis <b style="font-family:var(--mono)">${nf(ct)}</b> (viga <span class="${Math.abs(eT)<=10?'pos':'neg'}">${(eT>=0?'+':'\u2212')+Math.abs(eT).toFixed(1).replace('.',',')}%</span>) · struktuurne <b style="font-family:var(--mono)">${nf(cs)}</b> (viga <span class="${Math.abs(eS)<=10?'pos':'neg'}">${(eS>=0?'+':'\u2212')+Math.abs(eS).toFixed(1).replace('.',',')}%</span>).<br>Seni lähemal: <b style="color:var(--amber)">${closer}</b>.`+
+    (G.eksp.rm26?` RM aastaprognoos: ${nf(G.eksp.rm26)} M€.`:'')+(G.eksp.ep26?` EP: ${nf(G.eksp.ep26)} M€.`:'')+
+    `<div class="hint" style="margin-top:6px">Profiilitundlikkus: ühtlase (1/12) profiiliga oleks järjestus ${sameOrder?'SAMA':'ERINEV — tõlgenda ettevaatlikult'} (hooajaline profiil katab täidetud kuudest ${(wsum*100).toFixed(1).replace('.',',')}%). Üleminekureegli test (b) loeb täisaasta ±5% akent.</div>`;
+  }
+  // ekspertväljad
+  [['ekRm26','rm26'],['ekEp26','ep26'],['ekRm30','rm30'],['ekEp30','ep30']].forEach(([id,k])=>{
+    const el=$(id); if(!el) return;
+    if(document.activeElement!==el) el.value = G.eksp[k]??'';
+    el.onchange=()=>{ G.eksp[k]= el.value.trim()===''?null:+el.value; render(); };
+  });
+}
+$('trFill').onclick=()=>{
+  const w=KUUW.slice(0,5), s=w.reduce((a,b)=>a+b,0);
+  for(let i=0;i<5;i++) G.kuud2026[i]=Math.round(TEGELIK_5K*w[i]/s*10)/10;
+  render();
+};
+$('trClear').onclick=()=>{ G.kuud2026=Array(12).fill(null); render(); };
+
+/* aastatabel */
+const pct1 = v => (v*100).toFixed(1).replace('.',',')+'%';
+function buildTable(r){
+  const rows=[];
+  for(const y of YRS.filter(y=>y>=2020&&y<=2024)){
+    const sb=TKH[anchor][y]/0.22, tkl=sb*G.tauh;
+    rows.push({y,sb,eb:null,t0:MTA[y],tk:tkl,dr:drHist(anchor,y),
+      est:TKH_EST[anchor].includes(y),badge:['h','ajalugu'],t0lbl:'MTA'});
+  }
+  rows.push({y:2025,sb:r.b25,eb:null,t0:MTA[2025],tk:r.b25*G.tauh,dr:r.b25*G.tauh-MTA[2025],
+    est:true,badge:['e','hinnang'],t0lbl:'MTA'});
+  let cum=0;
+  for(const y of FY){
+    cum+=r.dr[y];
+    rows.push({y,sb:r.sb[y],eb:r.eb[y],t0:r.t0[y],tk:r.tk[y],dr:r.dr[y],
+      est:false,badge:['f','prognoos'],cum,t0lbl:'mudel'});
+  }
+  const maxD=Math.max(...rows.map(x=>Math.abs(x.dr)));
+  const S=rows.filter(x=>x.y>=2026);
+  const sum=k=>S.reduce((a,x)=>a+x[k],0);
+
+  let h=`<table class="yt"><thead><tr>
+    <th>Aasta</th><th></th>
+    <th>Maksustatav kasumibaas</th><th>Efekt. baas (käitumisega)</th>
+    <th>T_kehtiv (DPT)</th><th>T_klassik (CIT)</th>
+    <th>ΔR</th><th>ΔR %</th><th>Efekt. määr DPT → CIT</th><th>Kumul. ΔR</th>
+  </tr></thead><tbody>`;
+  for(const x of rows){
+    const col=x.dr>=0?'var(--grn)':'var(--red)';
+    const w=Math.max(2,Math.round(Math.abs(x.dr)/maxD*56));
+    const yextra = x.badge[0]==='f'
+      ? ` <button class="lockbtn" data-y="${x.y}" title="${locks[x.y]?'Ava lukk':'Lukusta aasta'}" aria-label="${locks[x.y]?'Ava lukk':'Lukusta'} ${x.y}">${locks[x.y]?'🔒':'🔓'}</button>${isMod(x.y)?'<span class="modmark" title="Individuaalsed seadistused">✱</span>':''}`
+      : (x.est?'&thinsp;*':'');
+    h+=`<tr class="${x.badge[0]==='f'?'fc':''}">
+      <td>${x.y}${yextra}</td>
+      <td style="text-align:left"><span class="badge ${x.badge[0]}">${x.badge[1]}</span></td>
+      <td>${nf(x.sb)}</td>
+      <td>${x.eb===null?'<span class="eff">—</span>':nf(x.eb)}</td>
+      <td>${nf(x.t0)} <span class="eff" style="font-size:10px">${x.t0lbl}</span></td>
+      <td>${nf(x.tk)}</td>
+      <td><div class="dcell"><span style="color:${col}">${sign(x.dr)}</span><span class="dbar" style="width:${w}px;background:${col}"></span></div></td>
+      <td style="color:${col}">${sign(x.dr/x.t0*100)} %</td>
+      <td class="eff">${pct1(x.t0/x.sb)} → <b>${pct1(x.tk/x.sb)}</b></td>
+      <td>${x.cum!==undefined?sign(x.cum):'<span class="eff">—</span>'}</td>
+    </tr>`;
+  }
+  h+=`<tr class="sum"><td>Σ 26–30</td><td></td><td>${nf(sum('sb'))}</td><td>${nf(sum('eb'))}</td>
+    <td>${nf(sum('t0'))}</td><td>${nf(sum('tk'))}</td>
+    <td><div class="dcell"><span style="color:${sum('dr')>=0?'var(--grn)':'var(--red)'}">${sign(sum('dr'))}</span></div></td>
+    <td style="color:${sum('dr')>=0?'var(--grn)':'var(--red)'}">${sign(sum('dr')/sum('t0')*100)} %</td>
+    <td class="eff">${pct1(sum('t0')/sum('sb'))} → <b>${pct1(sum('tk')/sum('sb'))}</b></td>
+    <td>${sign(sum('dr'))}</td></tr>`;
+  h+='</tbody></table>';
+  $('ytWrap').innerHTML=h;
+  $('ytWrap').querySelectorAll('.lockbtn').forEach(b=>b.onclick=()=>{
+    const y=+b.dataset.y; locks[y]=!locks[y]; syncSliders(); render();
+  });
+}
+
+/* ================= RENDER ================= */
+function render(){
+  const rAll=run('all'), rCom=run('common'), rAct=anchor==='all'?rAll:rCom, rOth=anchor==='all'?rCom:rAll;
+  const F=y=>y>=2026;
+
+  cCorr.data.datasets[0].data=YRS.map(y=>F(y)?rAll.dr[y]:null);
+  cCorr.data.datasets[1].data=YRS.map(y=>F(y)?rCom.dr[y]:null);
+  cCorr.data.datasets[2].data=YRS.map(y=>F(y)?rAct.dr[y]:null);
+  cCorr.data.datasets[3].data=YRS.map(y=>DR_HIST.all[y]!=null?drHist('all',y):null);
+  cCorr.data.datasets[4].data=YRS.map(y=>DR_HIST.common[y]!=null?drHist('common',y):null);
+  cCorr.update();
+
+  const P=rAct.parts;
+  const steps=[[0,P.lagi]];
+  let c=P.lagi;
+  for(const d of [-P.invest,-P.varj,-P.shift,-P.kogumine]){steps.push([c,c+d]);c+=d;}
+  steps.push([0,P.tk+P.tr]); c=P.tk+P.tr;
+  steps.push([c,c-P.dpt]); c-=P.dpt;
+  steps.push([0,c]);
+  cWater.data.datasets[0].data=steps;
+  cWater.data.datasets[0].backgroundColor=['#4f8ff7','#e5646c','#e5646c','#e5646c','#e5646c','#8fc1ff','#e5646c',c>=0?'#47c98f':'#e5646c'];
+  cWater.update();
+
+  cTot.data.datasets[0].data=FY.map(y=>rAct.tot0[y]);
+  cTot.data.datasets[1].data=FY.map(y=>rAct.totR[y]);
+  cTot.update();
+
+  const set=(id,v)=>{const e=$(id);e.textContent=sign(v)+' M€';e.className='v '+(v>=0?'pos':'neg');};
+  set('k1',rAct.dr[2026]); set('k2',rAct.dr[2030]);
+  $('k1s').textContent=`teine ankur: ${sign(rOth.dr[2026])} M€`;
+  $('k2s').textContent=`teine ankur: ${sign(rOth.dr[2030])} M€`;
+  $('k3').textContent=`${nf(rAct.tk[2030])} / ${nf(rAct.t0[2030])}`;
+  const e4=$('k4'); e4.textContent=sign(rAct.cum)+' M€'; e4.className='v '+(rAct.cum>=0?'pos':'neg');
+
+  $('tagAnchor').textContent=anchor==='all'?'kõik firmad':'ühine populatsioon';
+  $('tagBl').textContent=G.blMode==='strukt'?'struktuurne (katsetusel)':'kassa-trend';
+  buildHM(); buildTable(rAct); buildColStrip(); buildAudit(rAct); buildMet(rAct); markCustom();
+}
+
+/* korduvkasutatav info-ikoon (sama komponent, mis staatilistel ikoonidel) */
+const infoIcon = t => `<span class="info" tabindex="0">i<span class="tip">${t}</span></span>`;
+
+/* veeruseletuste riba aastatabeli kohal */
+function buildColStrip(){
+  const terms=[
+    ['Maksustatav kasumibaas','Kogu positiivne kasum pärast osaluse vabastust ja kahjumi edasikandmist — see, mida klassikaline kord maksustaks. Ajaloos mikrosimist, prognoosis kasvatatud SKP-ga miinus investeeringu-drag. (Allikas: RIK avaandmed)'],
+    ['Efektiivne baas','Sama baas pärast käitumisreaktsioone: × (1 − varjamine − shifting). Ainult prognoosis — ajaloos käitumist definitsiooni järgi pole.'],
+    ['T_kehtiv (DPT)','Kehtiva korra laekumine: ajaloos MTA tegelik kassalaekumine, prognoosis 2025 tasemest SKP-ga kasvatatud trend × jaotamise kohandus. (Allikas: Riigieelarve laekumised / MTA JITM)'],
+    ['T_klassik (CIT)','Hüpoteetiline klassikalise korra laekumine: ajaloos baas × ajalooline määr (liugur), prognoosis efektiivne baas × aasta CIT määr × kogumise efektiivsus (+ üleminekuvaru). (Allikas: mudeli arvutus RIK andmetel)'],
+    ['ΔR','T_klassik − T_kehtiv: reformi netomõju eelarvele. Positiivne = reform tooks rohkem raha. Ajaloos staatiline (käitumiseta ülempiir), prognoosis käitumisega.'],
+    ['Efektiivne määr','Laekumine ÷ kogu kasumibaas kummaski süsteemis — kui suure osa KOGUKASUMIST riik päriselt kätte saab. DPT poolel madal, sest maksustatakse ainult jaotatud osa.']
+  ];
+  $('colStrip').innerHTML = terms.map(t=>`<span class="term">${t[0]} ${infoIcon(t[1])}</span>`).join('');
+}
+
+/* ================= ARVUTUSKÄIK (audit) ================= */
+let auditYear = 2026;
+function buildAudit(rAct){
+  // aastavalik
+  $('audYears').innerHTML = '<label style="font-size:12.5px;color:var(--mut)">Aasta:</label>'+
+    FY.map(y=>`<button class="ops-y ghostbtn" data-y="${y}" style="background:${y===auditYear?'#20304c':'var(--panel)'};border:1px solid ${y===auditYear?'var(--blue)':'var(--line)'};color:${y===auditYear?'var(--sky)':'var(--mut)'};font:600 12px var(--mono);padding:6px 12px;border-radius:7px;cursor:pointer">${y}</button>`).join('');
+  $('audYears').querySelectorAll('button').forEach(b=>b.onclick=()=>{auditYear=+b.dataset.y;buildAudit(anchor==='all'?run('all'):run('common'));});
+
+  const y=auditYear, q=params[y], r=rAct;
+  const row=(badge,name,val,src)=>`<div class="arow"><span><span class="b ${badge}">${badge==='g'?'🟢 andmed':badge==='bl'?'🔵 eeldus':'🟠 arvutus'}</span><span class="an">${name}</span>${src?`<span class="as"> · ${src}</span>`:''}</span><span class="av">${val}</span></div>`;
+
+  // A — tegelikud andmed
+  $('audA').innerHTML =
+    row('g','T_klassik 2024 ankur ('+(anchor==='all'?'kõik firmad':'ühine pop.')+')', nf(TK2024[anchor])+' M€','mikrosim, RIK avaandmed')+
+    row('g','→ maksustatav baas 2024', nf(TK2024[anchor]/0.22)+' M€','= ankur ÷ 0,22')+
+    row('g','MTA JIT laekumine 2025', nf(MTA[2025])+' M€','EMTA / riigieelarve fail')+
+    row('g','MTA JIT laekumine 2024', nf(MTA[2024])+' M€','EMTA aastaraamat')+
+    row('g','KM laekumine 2025', '4 200 M€','fin.ee')+
+    row('g','SKP nominaalne 2024', nf(SKP24)+' M€','Statistikaamet (ligikaudne)');
+  $('audWarn').innerHTML = '<b>Hinnangul põhinevad sisendid:</b> SKP 2024 on ligikaudne; palgafondi osakaal (47%) ja KM segamäär (23%) on kalibreerimata hinnangud; üleminekuvaru suurus on kohatäide'+(G.ulem?' <b>ja on praegu SEES — üleminekutulu number on seega illustratiivne</b>':'')+'. Mikrosimi ankur kannab dividendiproksü ja ellujäämisnihke piiranguid.';
+
+  // B — kasutaja eeldused
+  const bl=[['CIT määr τ',pct(q.tau)],['Kasumi varjamine',Math.round(q.vh*100)+' %'],['Profit shifting',Math.round(q.sh*100)+' %'],
+    ['Investeeringute mõju',Math.round(q.im*100)+' %'],['Tööjõu mõju',Math.round(q.tm*100)+' %'],['Kogumise efektiivsus',pct(q.eff)],
+    ['SKP nominaalkasv',pct(q.g)],['Palgakasv',pct(q.wg)],['Jaotamise kohandus',pct(q.jaotus)],
+    ['Ajalooline CIT määr',pct(G.tauh)],['Üleminekuvaru',G.ulem?nf(G.varu)+' M€ / '+G.ny+' a':'väljas']];
+  $('audB').innerHTML = bl.map(x=>row('bl',x[0],x[1])).join('');
+
+  // C — arvutusahel
+  const prev=r.prevB[y], grow=prev*q.g, drag=prev*q.im*CFG.KIM*q.tau;
+  const base=prev+grow-drag, hh=r.hh[y], ss=r.ss[y];
+  const varj=base*hh, shift=base*ss, effb=base-varj-shift;
+  const bruto=effb*q.tau, kadu=bruto*(1-q.eff);
+  const tr=(G.ulem&&y-2025<=G.ny)?G.varu*q.tau/G.ny:0;
+  const tklassik=bruto-kadu+tr;
+  const prevD=r.prevD[y], dpt=r.t0[y], dr=r.dr[y];
+  const st=(n,f,i,v)=>`<div class="fstep"><div class="fn"><span><span class="b o">🟠 arvutus</span>${n}</span><span class="fv">${v}</span></div><div class="ff">${f}</div><div class="fi">${i}</div></div>`;
+  $('audC').innerHTML =
+    st('Lähtebaas '+(y-1), 'baas₍ₜ₋₁₎', y===2026?'ankur 2024 × (1 + g₂₀₂₆) = '+nf(TK2024[anchor]/0.22)+' × '+(1+q.g).toFixed(3):'eelmise aasta arvutusest', nf(prev)+' M€')+
+    st('Kasumibaasi kasv', 'baas₍ₜ₋₁₎ × g', nf(prev)+' × '+pct(q.g)+' (🔵 SKP kasv)', '+'+nf(grow)+' M€')+
+    st('Investeeringu-drag', 'baas₍ₜ₋₁₎ × im × 0,2 × τ', nf(prev)+' × '+Math.round(q.im*100)+'% × 0,2 × '+pct(q.tau)+' — kumuleerub aastate üle', '−'+nf(drag)+' M€')+
+    st('Maksustatav baas '+y, 'summa', 'enne käitumisreaktsioone', nf(base)+' M€')+
+    st('Kasumi varjamine', 'baas × (2% + vh×2×τ)', 'osakaal h = '+pct(hh)+' (🔵 varjamine, 🟠 lineaarne vorm)', '−'+nf(varj)+' M€')+
+    st('Profit shifting', 'baas × 50% × sh×2,5 × max(0; τ−15%)', 'osakaal s = '+pct(ss)+' (🔵 shifting; 🟠 konstandid 50%, 2,5, 15%)', '−'+nf(shift)+' M€')+
+    st('Efektiivne maksubaas', 'baas × (1 − h − s)', 'aditiivne lahutus (🟠 lihtsustus)', nf(effb)+' M€')+
+    st('Brutomaks', 'efektiivne baas × τ', nf(effb)+' × '+pct(q.tau)+' (🔵 määr)', nf(bruto)+' M€')+
+    st('Kogumiskadu', 'brutomaks × (1 − eff)', '(🔵 efektiivsus '+pct(q.eff)+'; 🟠 ühtlane kõigile maksudele)', '−'+nf(kadu)+' M€')+
+    (G.ulem?st('Üleminekuvaru tulu', 'varu × τ ÷ n', nf(G.varu)+' × '+pct(q.tau)+' ÷ '+G.ny+' (🟠 varu = kohatäide)', '+'+nf(tr)+' M€'):'')+
+    st('T_klassik '+y, 'summa', 'klassikalise korra laekumine', nf(tklassik)+' M€')+
+    st('T_kehtiv (DPT baseline)', 'DPT₍ₜ₋₁₎ × (1+g) × (1+jaotus)', nf(prevD)+' × '+(1+q.g).toFixed(3)+' × '+(1+q.jaotus).toFixed(2)+' (🟢 ankur 2025 = '+nf(MTA[2025])+'; 🟠 trend-ekstrapolatsioon)', nf(dpt)+' M€')+
+    `<div class="fstep" style="background:#20304c;border-color:var(--blue)"><div class="fn"><span>ΔR ${y} — reformi netomõju</span><span class="fv" style="color:${dr>=0?'var(--grn)':'var(--red)'}">${sign(dr)} M€</span></div><div class="ff">T_klassik − T_kehtiv = ${nf(tklassik)} − ${nf(dpt)}</div></div>`;
+
+  // Koostis: tundlikkuspõhine (±10% häiritus, |ΔΔR| kategooria kaupa)
+  const dr0=run(anchor).dr[y];
+  const D=o=>Math.abs(run(anchor,o.over,o.cfg,o.scl).dr[y]-dr0);
+  let gSum = D({scl:{base:1.1,dpt:1}}) + D({scl:{base:1,dpt:1.1}});
+  let bSum = 0;
+  for(const k of ['g','vh','sh','im','eff','tau']) bSum += D({over:{[k]:q[k]*1.1}});
+  let oSum = 0;
+  for(const k of ['H0','SUUR','TREF','KVH','KSH','KIM']) oSum += D({cfg:{...CFG,[k]:CFG[k]*1.1}});
+  if(G.ulem){const gv=G.varu; G.varu=gv*1.1; oSum+=Math.abs(run(anchor).dr[y]-dr0); G.varu=gv;}
+  const tot=gSum+bSum+oSum||1;
+  const pg=Math.round(gSum/tot*100), pb=Math.round(bSum/tot*100), po=100-pg-pb;
+  $('audBar').innerHTML=`<div style="width:${pg}%;background:#47c98f" title="andmed ${pg}%"></div><div style="width:${pb}%;background:#4f8ff7" title="eeldused ${pb}%"></div><div style="width:${po}%;background:#f0a84b" title="mudel ${po}%"></div>`;
+  $('audLegend').innerHTML=`<span><span class="b g">🟢 tegelikud andmed</span>${pg}%</span><span><span class="b bl">🔵 kasutaja eeldused</span>${pb}%</span><span><span class="b o">🟠 mudeli vorm</span>${po}%</span>`;
+
+  // Lihtsustused
+  $('audS').innerHTML = [
+    ['Lineaarsed käitumisseosed','varjamine ja shifting kasvavad määraga lineaarselt (h = 2% + vh×2×τ). Tegelik reaktsioon on tõenäoliselt kumer — kõrgete määrade juures alahindab mudel kadu.'],
+    ['Fikseeritud koefitsiendid','konstandid 2; 2,5; 0,2; 50% ja 15% skaleerivad mõju-protsendid elastsusteks — need on disainivalikud, mitte hinnatud parameetrid.'],
+    ['Aditiivne kiilude lahutus','(1 − h − s) multiplikatiivse (1−h)(1−s) asemel — ülehindab kogu kadu suurte kiilude korral (~0,4 pp baaskalibratsioonil).'],
+    ['DPT trend-ekstrapolatsioon','baseline = 2025 laekumine × SKP kasv; ei modelleeri jaotamiskäitumist ega pankade avansimakse. 2025 rekordtase (ettejaotamine) tõenäoliselt ülehindab baseline\u2019i ja alahindab ΔR-i.'],
+    ['2025 sild','2025. aasta baas kasvab 2026. aasta SKP kasvuga, sest 2025 kohta parameetrit pole.'],
+    ['Püsiv kuhjumine','investeeringu-drag ja jaotamise kohandus on tasemeshiftid, mis ei taastu parameetri langetamisel — teadlik, aga võib üllatada.'],
+    ['Käitumine hetkeline','kiilud rakenduvad valitud aastal täisjõus; sisse-faasimist ega väljakuulutamisefekti pole.'],
+    ['Tsükkel ja kahjumid puuduvad','sile kasv; languse aasta kahjumivaru ei vähenda järgnevate aastate baasi.'],
+    ['Tagasiside puudub','investeeringute langus ei vähenda SKP-d ega palku — osalise tasakaalu mudel.'],
+    ['Päritud andmepiirangud','dividendiproksü, raamatupidamuslik ≠ maksustatav kasum, ellujäämisnihe — ankrutes sees.']
+  ].map(x=>`<div style="padding:5px 0;border-bottom:1px solid #1c202a"><b>${x[0]}.</b> <span style="color:var(--mut)">${x[1]}</span></div>`).join('');
+}
+
+/* ================= AUTOMAATNE PROGNOOSIVEA DIAGNOOS ================= */
+function buildDiag(){
+  // 1) Mõõdikud ainsalt mõõdetavalt võrdluselt: backtest T_kehtiv vs MTA (määrast ja liuguritest sõltumatu)
+  const abs = VAL.map(([y,a,m])=>m-a);
+  const pct_ = VAL.map(([y,a,m])=>(m-a)/a*100);
+  const cum = abs.reduce((s,x)=>s+x,0);
+  const cumPct = cum/VAL.reduce((s,[,a])=>s+a,0)*100;
+  const f1 = v=>(v>=0?'+':'\u2212')+Math.abs(v).toFixed(1).replace('.',',');
+  $('dgKpis').innerHTML=[
+    ['Keskmine |viga|',(pct_.reduce((s,e)=>s+Math.abs(e),0)/pct_.length).toFixed(1).replace('.',',')+' %','mõõdetud aastatel'],
+    ['Kumulatiivne viga',f1(cum)+' M€','summa üle aastate'],
+    ['Kumulatiivne viga %',f1(cumPct)+' %','vead tasakaalustuvad'],
+    ['Suund',(pct_[0]>0&&pct_[pct_.length-1]<0)?'+ → −':'segane','üle- → alahinnang']
+  ].map(k=>`<div class="kpi"><div class="l">${k[0]}</div><div class="v" style="font-size:20px">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('');
+
+  // 2) Aastapõhised põhjendatud hinnangud (reeglipõhine: märk + aasta kontekst → tõenäolised põhjused)
+  const reasons = (y,e)=>{
+    const out=[];
+    if(e>0 && y<2025) out.push(['Hinnanguline võimalik põhjus (kõrge kindlus):','mudel arvutab kehtiva korra maksu konstantse 22/78 määraga, aga '+y+'. aastal kehtis tegelikult 20/80 + regulaarsetele jaotustele 14/86 soodusmäär — mudeli määr on ~3–5 pp kõrgem kui toonane efektiivne segamäär, mis lükkab hinnangu ülespoole.']);
+    if(e>0) out.push(['Hinnanguline võimalik põhjus (keskmine kindlus):','dividendiproksü loeb jaotamiseks ka muid omakapitali vähenemisi (väljamaksed, ümberkorraldused), mis '+y+'. a majanduskontekstis võisid olla tavalisest suuremad.']);
+    if(e<0 && y>=2023) out.push(['Hinnanguline võimalik põhjus (kõrge kindlus):','MTA tegelik JIT sisaldab pankade avansilist tulumaksu (2024: ~26% laekumisest) ja erisoodustusi, mida dividendipõhine mudel ei püüa — kõrgete intresside aastatel tekib süstemaatiline alahinnang.']);
+    if(e<0 && y<2023) out.push(['Hinnanguline võimalik põhjus (keskmine kindlus):','osa jaotusi tehti varasemate aastate kasumist, mida proksü aastamuutusena ei näe.']);
+    out.push(['Hinnanguline võimalik põhjus (madal kindlus):','ümardused, lühendatud mikroaruannete puuduvad read ja aruannete hiline esitamine.']);
+    return out;
+  };
+  $('dgRows').innerHTML = VAL.map(([y,a,m],i)=>{
+    const e=pct_[i];
+    return `<div style="padding:10px 0;border-bottom:1px solid #1c202a">
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline">
+        <b>${y}</b>
+        <span style="font:600 13px var(--mono)">mudel ${nf(m)} vs tegelik ${nf(a)} M€ &nbsp;·&nbsp; <span class="${Math.abs(e)<=5?'pos':'neg'}">${f1(m-a)} M€ (${f1(e)} %)</span></span>
+      </div>
+      ${reasons(y,e).map(r=>`<div style="font-size:12px;color:var(--mut);margin-top:5px"><b style="color:var(--dim)">${r[0]}</b> ${r[1]}</div>`).join('')}
+    </div>`;
+  }).join('');
+  $('dgNote').innerHTML='<b>Oluline piirang:</b> see diagnoos katab ainult ajaloolise backtest\u2019i (T_kehtiv), sest prognoosiaastate 2026–2030 tegelikke väärtusi veel ei ole. Ajalooline viga EI saa tuleneda käitumuslikest eeldustest ega SKP-prognoosist — ajalugu on mudelis staatiline ja andmepõhine. Käitumis- ja makroeeldused muutuvad veaallikaks alles prognoosis; nende suurim risk on kirjas panuste tabelis eraldi ridadena. Kumulatiivne viga ('+f1(cum)+' M€) on väike, sest 2020 ülehinnang ja 2023–24 alahinnang tasakaalustavad teineteist — see EI tähenda, et üksikaastate vead oleksid olematud.';
+
+  // 3) Panuste tabel
+  const factors=[
+    ['Määrakoostis ajaloos (22/78 vs 20/80 + 14/86)','+3 … +5 %','Kõrge','arvutatav suund: mudeli 28,2% netomäär vs toonane efektiivne ~23–25%; seletab 2020–2022 ülehinnangu märki'],
+    ['Pankade avansiline tulumaks + erisoodustused puuduvad','\u22122 … \u22124 %','Kõrge','JIT koostis on teada (pangad ~26% 2024. a laekumisest); seletab 2023–2024 alahinnangu märki'],
+    ['Dividendiproksü (muud omakapitali liikumised)','±2 … ±4 %','Keskmine','proksü eeldus on dokumenteeritud piirang; suund varieerub aastati, täpne suurus vajaks TSD firmaandmeid'],
+    ['Ellujäämisnihe (kustunud firmad puuduvad paneelis)','\u22120,5 … \u22121,5 %','Madal','avaandmete teadaolev katvuslünk; suurusjärk RIK statistikavaate katvusest, kalibreerimata'],
+    ['Andmelüngad ja ümardused (sh 2021–22 read täitmata)','±0,5 %','Madal','jääkliige pärast suuremate tegurite arvestamist'],
+    ['Käitumuslikud eeldused (varjamine, investeeringud)','0 % ajaloos','Kõrge','ei kohaldu — ajalugu on staatiline; muutuvad peamiseks vealliaks alles prognoosis (tornado tipp)'],
+    ['SKP- ja palgaeeldused','0 % ajaloos','Kõrge','sama — mõjutavad ainult prognoosiaastaid; 1 pp viga kasvus \u2248 5% baasiviga 2030-ks (kuhjumine)']
+  ];
+  $('dgFactors').innerHTML = factors.map(f=>`<tr>
+    <td style="text-align:left;font-family:'IBM Plex Sans';font-size:12px">${f[0]}</td>
+    <td>${f[1]}</td>
+    <td><span class="pill ${f[2]==='Kõrge'?'':''}" style="font:600 10px var(--mono);border:1px solid var(--line);border-radius:99px;padding:2px 9px;color:${f[2]==='Kõrge'?'var(--grn)':f[2]==='Keskmine'?'var(--amber)':'var(--dim)'}">${f[2]}</span></td>
+  </tr>`).join('');
+  $('dgBasis').innerHTML='<b>Hinnangute alus:</b> '+factors.map((f,i)=>`<br>${i+1}. <i>${f[0].split(' (')[0]}</i> — ${f[3]}.`).join('');
+
+  // 4) Soovitused
+  const stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
+  const recs=[
+    ['Lisa ajalooline määrakoostis (20/80 ja 14/86 aastapõhiselt)','Kõrvaldab suurima teadaoleva ülehinnangu 2020–2022; TuMS-i määrad on avalik fakt.',4,2,'Kõrge'],
+    ['Täida mikrosimi 2021–2022 read (paneel on olemas)','Muudab backtest\u2019i kuueaastaseks ja diagnoosi statistiliselt usaldusväärsemaks.',3,1,'Kõrge'],
+    ['Lisa pankade avansilise tulumaksu eraldi moodul','Kõrvaldab 2023–2024 süstemaatilise alahinnangu; pangakasumid Finantsinspektsiooni statistikast.',4,2,'Kõrge'],
+    ['Kalibreeri käitumuskoefitsiendid ajalooliste episoodide põhjal (2018 ja 2025 määramuutused; Läti 2018 reform)','Suurim mõju PROGNOOSI täpsusele — tornado näitab, et käitumiseeldused domineerivad tulevast ebakindlust.',5,3,'Keskmine'],
+    ['Lisa automaatne backtest-kalibreerimine igasse andmejooksu','Viga arvutatakse ja kuvatakse iga uuendusega uuesti — mudel jälgib ise oma täpsust.',4,2,'Kõrge'],
+    ['Kasuta mittelineaarset (kumerat) funktsiooni käitumisreaktsioonides','Lineaarne h(τ) alahindab kadu kõrgete määrade juures; parandab määrastsenaariumide võrdlust.',3,2,'Keskmine'],
+    ['Lisa ettevõtete sektoripõhine jaotus (EMTAK)','Lubab sektorišokke ja finantssektori korrektset eraldamist; vähendab struktuurset viga.',3,3,'Kõrge'],
+    ['Lisa ettevõtete sünni ja lõpetamise dünaamika + katvustegur','Kõrvaldab ellujäämisnihke; nõuab RIK statistikavaate nimetajat ja demograafia eeldusi.',2,4,'Keskmine']
+  ];
+  $('dgRecs').innerHTML = recs.map(r=>`<div style="padding:9px 0;border-bottom:1px solid #1c202a">
+    <div style="font-size:12.5px;font-weight:600">${r[0]}</div>
+    <div style="font-size:11.5px;color:var(--mut);margin:2px 0 4px">${r[1]}</div>
+    <div style="font:500 11px var(--mono);color:var(--dim);display:flex;gap:18px;flex-wrap:wrap">
+      <span>Mõju täpsusele: <span style="color:var(--amber)">${stars(r[2])}</span></span>
+      <span>Keerukus: <span style="color:var(--sky)">${stars(r[3])}</span></span>
+      <span>Andmete saadavus: <span style="color:${r[4]==='Kõrge'?'var(--grn)':r[4]==='Keskmine'?'var(--amber)':'var(--red)'}">${r[4]}</span></span>
+    </div></div>`).join('');
+}
+buildDiag();
+
+/* vahelehed */
+function showPage(t){
+  const pages={intro:'pgIntro',over:'pgOver',table:'pgTable',audit:'pgAudit',met:'pgMet'}, tabs={intro:'tabIntro',over:'tabOver',table:'tabTable',audit:'tabAudit',met:'tabMet'};
+  for(const k in pages){
+    $(pages[k]).hidden = k!==t;
+    $(tabs[k]).classList.toggle('on',k===t);
+    $(tabs[k]).setAttribute('aria-selected',k===t);
+  }
+  if(t==='over'){cCorr.resize();cWater.resize();cTot.resize();}
+  if(t==='met'){cMet.resize();cTrack.resize();}
+}
+$('tabIntro').onclick=()=>showPage('intro');
+$('tabOver').onclick=()=>showPage('over');
+$('tabTable').onclick=()=>showPage('table');
+$('tabAudit').onclick=()=>showPage('audit');
+$('tabMet').onclick=()=>showPage('met');
+document.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>showPage(b.dataset.goto));
+let auditMode='simple';
+function setAuditMode(m){auditMode=m;$('pgAudit').classList.toggle('simple',m==='simple');
+  $('amSimple').classList.toggle('on',m==='simple');$('amExpert').classList.toggle('on',m==='expert');}
+$('amSimple').onclick=()=>setAuditMode('simple');
+$('amExpert').onclick=()=>setAuditMode('expert');
+setAuditMode('simple');
+
+/* ================= SÜNDMUSED ================= */
+document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{
+  scen=b.dataset.sc; resetAllYears();
+  G={...freshG(), kuud2026:G.kuud2026, eksp:G.eksp};
+  document.querySelectorAll('.seg button').forEach(x=>x.classList.toggle('on',x===b));
+  syncSliders(); render();
+});
+document.querySelectorAll('.anchor button').forEach(b=>b.onclick=()=>{
+  anchor=b.dataset.an;
+  document.querySelectorAll('.anchor button').forEach(x=>x.classList.toggle('on',x===b));
+  render();
+});
+for(const k in YEAR_SLIDERS){
+  $(k).addEventListener('input',()=>{
+    const v=+$(k).value;
+    FY.forEach(y=>{ if(!locks[y]) params[y][k]=v; });
+    $('o_'+k).textContent=YEAR_SLIDERS[k](v);
+    render();
+  });
+}
+document.querySelectorAll('[data-bl]').forEach(b=>b.onclick=()=>{G.blMode=b.dataset.bl;syncSliders();render();});
+$('blPank').addEventListener('change',()=>{G.blPank=$('blPank').checked;render();});
+$('tauh').addEventListener('input',()=>{G.tauh=+$('tauh').value;$('o_tauh').textContent=pct(G.tauh);render();});
+$('varu').addEventListener('input',()=>{G.varu=+$('varu').value;$('o_varu').textContent=nf(G.varu)+' M€';render();});
+$('ny').addEventListener('input',()=>{G.ny=+$('ny').value;$('o_ny').textContent=G.ny+' a';render();});
+$('ulem').addEventListener('change',()=>{G.ulem=$('ulem').checked;syncSliders();render();});
+
+$('lockYr').onclick=()=>{ locks[selYear]=!locks[selYear]; syncSliders(); render(); };
+$('opApplyAll').onclick=()=>{ const src={...params[selYear]}; FY.forEach(y=>{ if(!locks[y]) params[y]={...src}; }); syncSliders(); render(); };
+$('opPrev').onclick=()=>{ if(selYear>2026&&!locks[selYear]){ params[selYear]={...params[selYear-1]}; syncSliders(); render(); } };
+$('opNext').onclick=()=>{ if(selYear<2030&&!locks[selYear]){ params[selYear]={...params[selYear+1]}; syncSliders(); render(); } };
+$('opResetYr').onclick=()=>{ if(!locks[selYear]){ params[selYear]={...SCEN[scen]}; syncSliders(); render(); } };
+$('opResetAll').onclick=()=>{ resetAllYears(); syncSliders(); render(); };
+
+$('opExport').onclick=()=>{
+  const cfg={versioon:1,stsenaarium:scen,ankur:anchor,valitudAasta:selYear,globaalsed:G,aastad:params,lukud:locks};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(cfg,null,2)],{type:'application/json'}));
+  a.download='cit_seadistused.json'; a.click(); URL.revokeObjectURL(a.href);
+};
+$('opImport').onclick=()=>$('impFile').click();
+$('impFile').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const c=JSON.parse(rd.result);
+      if(!c.aastad) throw new Error('aastad puudu');
+      scen = SCEN[c.stsenaarium]?c.stsenaarium:'baas';
+      anchor = c.ankur==='all'?'all':'common';
+      G = {...freshG(), ...(c.globaalsed||{})};
+      if(!Array.isArray(G.kuud2026)||G.kuud2026.length!==12) G.kuud2026=Array(12).fill(null);
+      G.eksp = {rm26:null,ep26:null,rm30:null,ep30:null, ...(G.eksp||{})};
+      FY.forEach(y=>{
+        params[y]={...SCEN[scen], ...((c.aastad[y])||{})};
+        locks[y]=!!(c.lukud&&c.lukud[y]);
+      });
+      selYear = FY.includes(c.valitudAasta)?c.valitudAasta:2026;
+      document.querySelectorAll('.seg button').forEach(x=>x.classList.toggle('on',x.dataset.sc===scen));
+      document.querySelectorAll('.anchor button').forEach(x=>x.classList.toggle('on',x.dataset.an===anchor));
+      syncSliders(); render();
+    }catch(err){
+      alert('Vigane seadistusfail — kontrolli, et tegemist on siit eksporditud JSON-iga.');
+    }
+    e.target.value='';
+  };
+  rd.readAsText(f);
+});
+
+$('reset').onclick=()=>{
+  scen='baas'; resetAllYears(); selYear=2026;
+  G={...freshG(), kuud2026:G.kuud2026, eksp:G.eksp};
+  document.querySelectorAll('.seg button').forEach(x=>x.classList.toggle('on',x.dataset.sc==='baas'));
+  syncSliders(); render();
+};
+
+syncSliders(); render(); showPage('intro');
+</script>
+</body>
+</html>
