@@ -81,6 +81,9 @@ th:first-child,td:first-child{text-align:left}
 .ok{color:var(--grn)}.warn{color:var(--amber)}
 footer{margin-top:22px;font-size:12px;color:var(--dim);line-height:1.7;border-top:1px solid var(--line);padding-top:14px}
 footer b{color:var(--mut)}
+/* v9: metoodika lehel paneel peidus */
+body.nopanel aside{display:none}
+body.nopanel .wrap{grid-template-columns:1fr}
 /* v8: õhulisus, metoodikaleht, kaks taset */
 .grid{gap:16px}
 .card{padding:18px 20px;border-radius:14px}
@@ -161,8 +164,6 @@ footer b{color:var(--mut)}
 <header>
   <h1>Ettevõtte tulumaksu reform <span class="thin">· DPT → klassikaline CIT</span></h1>
   <span class="tag">Prognoos 2026–2030 · M€</span>
-  <span class="tag">Stsenaarium: <b id="tagScen">Baas</b></span>
-  <span class="tag">Ankur: <b id="tagAnchor">ühine populatsioon</b></span>
   <span class="tag">Baseline: <b id="tagBl">kassa-trend</b></span>
   <nav class="tabs" role="tablist">
     <button id="tabIntro" class="on" role="tab" aria-selected="true">Metoodika</button>
@@ -176,32 +177,11 @@ footer b{color:var(--mut)}
 <div class="wrap">
 <aside>
   <div class="grp" style="margin-top:4px">
-    <h3>Stsenaarium</h3>
-    <div class="seg" role="group" aria-label="Stsenaarium">
-      <button data-sc="kons">Konserv.</button>
-      <button data-sc="baas" class="on">Baas</button>
-      <button data-sc="agr">Agress.</button>
-    </div>
+    <h3>Eeldused</h3>
+    <div class="hint" style="margin-top:0">Liugurid algavad realistlikest baasväärtustest. Muuda vabalt — märge allpool näitab, kui oled vaikeseadetest kõrvale kaldunud.</div>
     <div class="custom-note" id="customNote"></div>
   </div>
 
-  <div class="grp">
-    <h3>Populatsiooni ankur <span class="info" tabindex="0">i<span class="tip"><b>Ühine populatsioon:</b> kõik aastad arvutatakse sama ettevõtete kogumi baasil — ainult firmad, kelle kohta on olemas nii kehtiva kui klassikalise korra hinnang. Sobib, kui tahad hinnata puhtalt maksumuudatuse mõju ilma populatsiooni muutuseta; konservatiivne valik.<br><br><b>Kõik firmad:</b> iga aasta kasutab kogu vastava aasta ettevõtete populatsiooni, sh firmad, kellel kehtiva korra hinnang puudub (nende jaotamine loetakse nulliks). Arvestab ettevõtete lisandumise ja struktuurimuutustega; sobib pikemaks vaateks, aga on ülemine ots.<br><br>Tegelik mõju jääb kahe vahele — seetõttu näitab graafik alati mõlemat koridorina.</span></span></h3>
-    <div class="anchor" role="group" aria-label="Ankur">
-      <button data-an="common" class="on">Ühine populatsioon · konservatiivne (T<sub>klassik</sub> 2024 = 1 476)</button>
-      <button data-an="all">Kõik firmad · ülemine ots (T<sub>klassik</sub> 2024 = 1 656)</button>
-    </div>
-    <div class="hint">Graafikul on alati näha mõlema ankru koridor; valik määrab, kumb joon juhib põhinäitajaid.</div>
-  </div>
-
-  <div class="grp">
-    <h3>DPT baseline (kehtiv kord) <span class="info" tabindex="0">i<span class="tip"><b>Kassa-trend (vaikimisi):</b> 2025 tegelik laekumine (1 125 M€) × SKP kasv. Lihtne, aga lähtetase sisaldab määratõusu-eelse ettejaotamise ühekordset paisutust (~+13%).<br><br><b>Struktuurne (katsetusel):</b> kolm komponenti eraldi — dividendimaks (struktuurne voog 2 815 M€ × 27,9%; TSD-ga ristkontrollitud −0,5%), pankade avansiline tulumaks ja väikesed komponendid (erisoodustused jm). Allikad: JITM komponentlahutus + TSD lisa 7.<br><br>Struktuurne muutub vaikimisi meetodiks alles siis, kui ta näitab järjepidevalt väiksemat prognoosiviga — seisu näed Metoodika võrdluse vahelehel.</span></span></h3>
-    <div class="anchor" role="group" aria-label="Baseline">
-      <button data-bl="trend" class="on">Kassa-trend · vaikimisi (2025 laekumine × kasv)</button>
-      <button data-bl="strukt">Struktuurne · katsetusel (komponendid, TSD/JITM)</button>
-    </div>
-    <div class="tgl" id="pankTgl" style="margin-top:8px;opacity:.35"><input type="checkbox" id="blPank"><label for="blPank">Pangakomponent kasvab SKP-ga (muidu püsiv tase) <span class="info" tabindex="0">i<span class="tip">Pankade avansiline tulumaks sõltub intressitsüklist, mitte SKP-st (2023 hüpe 50→119 M€ tuli EURIBOR-ist). Püsiv tase on konservatiivne; SKP-ga kasvatamine lisab 2030-ks ~38 M€ baseline\u2019i.</span></span></label></div>
-  </div>
 
   <div class="grp">
     <h3>Prognoosiaasta</h3>
@@ -269,8 +249,20 @@ footer b{color:var(--mut)}
 <main>
 <section id="pgIntro">
   <div class="card full">
-    <h2>Kuidas see mudel töötab?</h2>
-    <div class="sub">See leht selgitab kogu arvutuse loogikat lihtsas keeles — ilma valemiteta. Numbrid leiad Aastatabelist, graafikud Ülevaatest ja iga numbri täpse tekkeloo Arvutuskäigust.</div>
+    <h2>Mis see mudel on?</h2>
+    <div style="font-size:13.5px;line-height:1.75;max-width:860px;margin-bottom:6px">See finantsmudel hindab, kui suur oleks Eesti riigi maksutulu juhul, kui Eesti läheks jaotamispõhiselt ettevõtte tulumaksult üle klassikalisele ettevõtte tulumaksule. Mudel kasutab päris ettevõtete majandusandmeid ning arvestab ettevõtete võimalike käitumisreaktsioonidega, et hinnata reformi mõju võimalikult realistlikult. Tulemus on hinnanguline vahemik, mitte täpne ennustus.</div>
+    <div class="card" style="margin:10px 0 18px;max-width:860px">
+      <h2 style="font-size:13.5px">Kuidas seda kasutada?</h2>
+      <div style="font-size:12.5px;line-height:1.9">
+        <b>1.</b> Tutvu sellel lehel metoodika ja andmeallikatega.<br>
+        <b>2.</b> Vaata <b>Aastatabelist</b> prognoose aastate lõikes.<br>
+        <b>3.</b> Kasuta <b>Ülevaadet</b> peamiste tulemuste ja graafikute võrdlemiseks.<br>
+        <b>4.</b> Ava <b>Arvutuskäik</b>, kui soovid näha, kuidas konkreetne tulemus samm-sammult kujunes.<br>
+        <b>5.</b> <b>Eksperdi vaade</b> sisaldab mudeli diagnostikat, metoodikate võrdlust ja täiendavaid analüüse.
+      </div>
+    </div>
+    <h2 style="margin-top:6px">Kuidas arvutus käib?</h2>
+    <div class="sub">Sama loogika lihtsas keeles — ilma valemiteta. Iga numbri täpse tekkeloo leiad Arvutuskäigust.</div>
     <div class="grid" style="margin-top:0">
       <div>
         <div style="font-size:13.5px;line-height:1.8">
@@ -313,6 +305,15 @@ footer b{color:var(--mut)}
           <tr><td style="text-align:left">Käitumisreaktsioonide suurused</td><td style="text-align:left">Teaduskirjandus <span class="chip">KALIBREERIMATA</span></td><td style="text-align:left">liugurite stsenaariumid (konservatiivne/baas/agressiivne)</td></tr>
         </tbody></table>
       </div>
+      <div class="card full" style="margin:0">
+        <h2 style="font-size:14px">Mida mudel ei tee?</h2>
+        <div style="font-size:12.5px;line-height:1.9">
+          — Ei ennusta majanduskriise ega -tsükleid: kasv on eeldus, mida saad ise muuta.<br>
+          — Ei ennusta poliitilisi otsuseid: mudel arvutab tagajärgi, mitte tõenäosusi, et reform toimub.<br>
+          — Ei ennusta üksiku ettevõtte käitumist: kõik reaktsioonid on kogumi keskmised.<br>
+          — Ei asenda ametlikku prognoosi: annab hinnangu olemasolevate andmete ja teadmiste põhjal, koos avalikult näidatud ebakindlusega.
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -328,7 +329,7 @@ footer b{color:var(--mut)}
   <div class="grid">
     <div class="card full">
       <h2>ΔR-koridor — eelarvemõju vahemikuna <span class="info" tabindex="0">i<span class="tip">Näitab reformi netomõju (ΔR = klassikaline maks − kehtiva korra laekumine) aastate lõikes. Ajaloo punktid = staatiline mikrosim ajaloolise CIT määraga; prognoosijooned = käitumiskiiludega. Varjutatud ala on kahe populatsiooniankru vahe — tõlgenda tulemust vahemikuna, mitte punktina.</span></span></h2>
-      <div class="sub">Ajalugu 2020–2024: staatiline mikrosim (päris RIK andmed) ajaloolise CIT määra liuguriga. Prognoos 2026–2030: käitumuskiiludega. Varjutatud ala = populatsiooniankrute vahe („kõik firmad" ülemine, „ühine" alumine).</div>
+      <div class="sub">Ajalugu 2020–2024: staatiline mikrosim (päris RIK andmed) ajaloolise CIT määra liuguriga. Prognoos 2026–2030: käitumuskiiludega. Põhijoon = konservatiivne põhihinnang; varjutatud ala ülemine serv = laiema populatsiooni ülemine piir (metoodiline ebakindlusvahemik).</div>
       <div class="cwrap tall"><canvas id="cCorridor"></canvas></div>
     </div>
 
@@ -443,6 +444,17 @@ footer b{color:var(--mut)}
     <h2>Eksperdi vaade — metoodika võrdlus, tundlikkus ja detailne valideerimine</h2>
     <div class="sub">Mõlemad meetodid jooksevad alati paralleelselt. Vaikimisi on kasutusel kassa-trend; struktuurne saab vaikimisi meetodiks alles siis, kui ta näitab järjepidevalt väiksemat prognoosiviga. Allpool on eeldused, mõju lõpptulemusele ja automaatne ajalooline test.</div>
     <div class="grid" style="margin-top:0">
+      <div class="card full" style="margin:0">
+        <h2 style="font-size:14px">Baseline’i valik (juhib kogu rakendust)</h2>
+        <div>
+        <h3 style="margin-top:4px">DPT baseline (kehtiv kord) <span class="info" tabindex="0">i<span class="tip"><b>Kassa-trend (vaikimisi):</b> 2025 tegelik laekumine (1 125 M€) × SKP kasv. Lihtne, aga lähtetase sisaldab määratõusu-eelse ettejaotamise ühekordset paisutust (~+13%).<br><br><b>Struktuurne (katsetusel):</b> kolm komponenti eraldi — dividendimaks (struktuurne voog 2 815 M€ × 27,9%; TSD-ga ristkontrollitud −0,5%), pankade avansiline tulumaks ja väikesed komponendid (erisoodustused jm). Allikad: JITM komponentlahutus + TSD lisa 7.<br><br>Struktuurne muutub vaikimisi meetodiks alles siis, kui ta näitab järjepidevalt väiksemat prognoosiviga — seisu näed Metoodika võrdluse vahelehel.</span></span></h3>
+    <div class="anchor" role="group" aria-label="Baseline">
+      <button data-bl="trend" class="on">Kassa-trend · vaikimisi (2025 laekumine × kasv)</button>
+      <button data-bl="strukt">Struktuurne · katsetusel (komponendid, TSD/JITM)</button>
+    </div>
+    <div class="tgl" id="pankTgl" style="margin-top:8px;opacity:.35"><input type="checkbox" id="blPank"><label for="blPank">Pangakomponent kasvab SKP-ga (muidu püsiv tase) <span class="info" tabindex="0">i<span class="tip">Pankade avansiline tulumaks sõltub intressitsüklist, mitte SKP-st (2023 hüpe 50→119 M€ tuli EURIBOR-ist). Püsiv tase on konservatiivne; SKP-ga kasvatamine lisab 2030-ks ~38 M€ baseline\u2019i.</span></span></label></div>
+  </div>
+      </div>
       <div class="card full" style="margin:0">
         <h2 style="font-size:14px">Baseline Explorer — miks lähtetasemed erinevad? <span class="info" tabindex="0">i<span class="tip">Lahutab 2025. aasta lähtetasemete 127 M€ vahe komponentideks. Kassa-trendi tase on tegelik laekumine (fakt); struktuurse taseme komponendid on TSD/JITM andmetest, aga 2025 kassa komponentlahutus ise on osalt tuletatud — märgistus näitab, mis on fakt ja mis hinnang.</span></span></h2>
         <div id="blExp"></div>
@@ -565,7 +577,7 @@ const KUUD = ['jaan','veebr','märts','apr','mai','juuni','juuli','aug','sept','
 /* Mõju-% (0..1) → sisemine parameeter: eh = vh·2 · es = sh·2,5 · ψ = im·0,2 · λ = tm·0,1 */
 const SCEN = {
   kons:{tau:.22,vh:.125,sh:.16,im:.10,tm:.10,eff:.97,g:.05,wg:.055,jaotus:0},
-  baas:{tau:.22,vh:.25, sh:.32,im:.25,tm:.20,eff:.95,g:.05,wg:.055,jaotus:0},
+  baas:{tau:.22,vh:.10, sh:.10,im:.08,tm:.05,eff:.95,g:.05,wg:.055,jaotus:0},
   agr: {tau:.22,vh:.50, sh:.60,im:.50,tm:.40,eff:.92,g:.05,wg:.055,jaotus:0}
 };
 const GDEF = {varu:30000,ny:5,ulem:false,tauh:0.18,blMode:'trend',blPank:false};
@@ -666,7 +678,7 @@ function syncSliders(){
 function markCustom(){
   const diff = FY.some(isMod) || G.varu!==GDEF.varu || G.ny!==GDEF.ny || G.ulem!==GDEF.ulem || G.tauh!==GDEF.tauh || G.blMode!==GDEF.blMode || G.blPank!==GDEF.blPank;
   $('customNote').textContent = diff?'▸ kohandatud parameetrid':'';
-  $('tagScen').textContent = ({kons:'Konservatiivne',baas:'Baas',agr:'Agressiivne'})[scen]+(diff?' (koh.)':'');
+  
 }
 
 /* ================= GRAAFIKUD ================= */
@@ -678,11 +690,11 @@ const tt = {backgroundColor:'#1d212b',borderColor:'#262b36',borderWidth:1,titleF
 
 const cCorr = new Chart($('cCorridor'),{type:'line',
  data:{labels:YRS,datasets:[
-  {label:'Ülemine (kõik firmad)',data:[],borderColor:'rgba(143,193,255,.55)',borderWidth:1.5,pointRadius:0,tension:.25},
+  {label:'Ülemine piir (laiem populatsioon)',data:[],borderColor:'rgba(143,193,255,.55)',borderWidth:1.5,pointRadius:0,tension:.25},
   {label:'Alumine (ühine pop.)',data:[],borderColor:'rgba(143,193,255,.55)',borderWidth:1.5,pointRadius:0,tension:.25,
    fill:'-1',backgroundColor:'rgba(79,143,247,.13)'},
   {label:'Aktiivne ankur',data:[],borderColor:'#f0a84b',borderWidth:2.5,pointRadius:0,tension:.25,borderDash:[]},
-  {label:'Ajalugu · kõik firmad',data:[],borderColor:'transparent',pointBackgroundColor:'#8fc1ff',pointRadius:4,showLine:false},
+  {label:'Ajalugu · ülemine piir',data:[],borderColor:'transparent',pointBackgroundColor:'#8fc1ff',pointRadius:4,showLine:false},
   {label:'Ajalugu · ühine',data:[],borderColor:'transparent',pointBackgroundColor:'#4f8ff7',pointRadius:4,pointStyle:'rectRot',showLine:false},
  ]},
  options:{responsive:true,maintainAspectRatio:false,animation:!noAnim,
@@ -972,7 +984,6 @@ function render(){
   $('k3').textContent=`${nf(rAct.tk[2030])} / ${nf(rAct.t0[2030])}`;
   const e4=$('k4'); e4.textContent=sign(rAct.cum)+' M€'; e4.className='v '+(rAct.cum>=0?'pos':'neg');
 
-  $('tagAnchor').textContent=anchor==='all'?'kõik firmad':'ühine populatsioon';
   $('tagBl').textContent=G.blMode==='strukt'?'struktuurne (katsetusel)':'kassa-trend';
   buildHM(); buildTable(rAct); buildColStrip(); buildAudit(rAct); buildMet(rAct); markCustom();
 }
@@ -1153,6 +1164,7 @@ buildDiag();
 
 /* vahelehed */
 function showPage(t){
+  document.body.classList.toggle('nopanel', t==='intro');
   const pages={intro:'pgIntro',over:'pgOver',table:'pgTable',audit:'pgAudit',met:'pgMet'}, tabs={intro:'tabIntro',over:'tabOver',table:'tabTable',audit:'tabAudit',met:'tabMet'};
   for(const k in pages){
     $(pages[k]).hidden = k!==t;
