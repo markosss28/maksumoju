@@ -314,7 +314,7 @@ body.nopanel .wrap{grid-template-columns:1fr}
       <div>
         <div style="font-size:13.5px;line-height:1.8">
           <p style="margin-bottom:10px"><b>1.</b> Kõigepealt vaatame <b>iga Eesti ettevõtte kasumit</b> — need andmed tulevad äriregistri majandusaasta aruannetest (üle miljoni aruande).</p>
-          <p style="margin-bottom:10px"><b>2.</b> Võtame maha osa, mida seadus ei maksustaks: varasemate aastate <b>kahjumid</b> ja kontsernisisesed dividendid, mida on juba korra maksustatud. Kontsernisiseste dividendide leidmiseks kasutab mudel <b>seaduse enda reeglit</b>: kui üks firma omab teisest vähemalt <b>10%</b>, on temale makstud dividend tulumaksuvaba (TuMS § 50 lg 1¹). Mudel ei oleta, kes on „valdusfirma" — ta vaatab äriregistri osanike andmetest järele, kes kellest kui suure osa omab.</p>
+          <p style="margin-bottom:10px"><b>2.</b> Võtame maha osa, mida seadus ei maksustaks: varasemate aastate <b>kahjumid</b> ja kontsernisisesed dividendid, mida on juba korra maksustatud. Kontsernisiseste dividendide leidmiseks kasutab mudel <b>seaduse enda reeglit</b>: kui üks firma omab teisest vähemalt <b>10%</b>, on temale makstud dividend tulumaksuvaba (TuMS § 50 lg 1¹). Mudel ei oleta, kes on „valdusfirma" — ta vaatab äriregistri osanike andmetest järele, kes kellest kui suure osa omab. Selle maha võetava osa maht on kontrollitud maksuameti tegeliku näitaja vastu — <b>TSD lisa 7 „maksuvaba edasijaotus" (kood 7310)</b>, mis oli 2024. aastal <b>1 742 M€</b> (mõõdetud alampiir).</p>
           <p style="margin-bottom:10px"><b>3.</b> Nii saame teada, <b>kui palju kasumit võiks klassikaline tulumaks maksustada</b>.</p>
           <p style="margin-bottom:10px"><b>4.</b> Arvestame, et päris elus ettevõtted <b>reageerivad</b>: mõni investeerib vähem, mõni deklareerib vähem kasumit, mõni viib kasumi välismaale. Nende reaktsioonide suurust saad ise liuguritega muuta.</p>
           <p style="margin-bottom:10px"><b>5.</b> Alles siis arvutame, <b>kui palju maksu riik tegelikult koguks</b> — arvestades ka seda, et kogu teoreetiline summa kunagi päriselt kohale ei jõua.</p>
@@ -374,7 +374,7 @@ body.nopanel .wrap{grid-template-columns:1fr}
           — Ei ennusta poliitilisi otsuseid: mudel arvutab tagajärgi, mitte tõenäosusi, et reform toimub.<br>
           — Ei ennusta üksiku ettevõtte käitumist: kõik reaktsioonid on kogumi keskmised.<br>
           — Ei asenda ametlikku prognoosi: annab hinnangu olemasolevate andmete ja teadmiste põhjal, koos avalikult näidatud ebakindlusega.<br>
-          — <b>Ei modelleeri klassikalise tulumaksu maksureegleid</b>, sest neid ei ole olemas: Eestis puudub klassikalise CIT maksuseadustik, mille järgi neid arvutada. Maksubaasi definitsioon on <b>poliitikavalik, mitte modelleeritav suurus</b>. Konkreetselt jäävad modelleerimata: maksuamortisatsiooni reeglid (raamatupidamislik kulum ≠ maksukulum), maksuvabastus kasule osaluse võõrandamisest, intressi mahaarvamise piirangud (ATAD-i intressipiirang), kahjumi edasikandmise täpsed piirangud (ajaline ja mahuline) ning mahaarvamatute kulude nimekiri. Võrdluseks: Euroopa Komisjoni JRC mudel DiRECT modelleerib neid eksplitsiitselt, kasutades maksuandmeid ja imputeerimist — meie mudel asendab need lihtsustustega, sest sellist andmestikku ei ole avalikult olemas. Erandiks on osaluse vabastus, mis on nüüd modelleeritud seaduse enda kriteeriumiga (≥10% osalus) päris omandusgraafi põhjal, mitte lähendiga. Mudel kasutab kõigi nende asemel raamatupidamislikku kasumit enne tulumaksu.
+          — <b>Ei modelleeri klassikalise tulumaksu maksureegleid</b>, sest neid ei ole olemas: Eestis puudub klassikalise CIT maksuseadustik, mille järgi neid arvutada. Maksubaasi definitsioon on <b>poliitikavalik, mitte modelleeritav suurus</b>. Konkreetselt jäävad modelleerimata: maksuamortisatsiooni reeglid (raamatupidamislik kulum ≠ maksukulum), maksuvabastus kasule osaluse võõrandamisest, intressi mahaarvamise piirangud (ATAD-i intressipiirang), kahjumi edasikandmise täpsed piirangud (ajaline ja mahuline) ning mahaarvamatute kulude nimekiri. Võrdluseks: Euroopa Komisjoni JRC mudel DiRECT modelleerib neid eksplitsiitselt, kasutades maksuandmeid ja imputeerimist — meie mudel asendab need lihtsustustega, sest sellist andmestikku ei ole avalikult olemas. Erandiks on osaluse vabastus, mis on nüüd modelleeritud seaduse enda kriteeriumiga (≥10% osalus) päris omandusgraafi põhjal, mitte lähendiga; maha võetud maksuvaba edasijaotuse maht on ankurdatud MTA mõõdetud <b>TSD lisa 7 näitaja (kood 7310)</b> vastu — 2024 = 1 742 M€, mis on selle alampiir. Mudel kasutab kõigi nende asemel raamatupidamislikku kasumit enne tulumaksu.
         </div>
       </div>
     </div>
@@ -396,33 +396,6 @@ body.nopanel .wrap{grid-template-columns:1fr}
       <div class="cwrap tall"><canvas id="cCorridor"></canvas></div>
     </div>
 
-    <div class="card">
-      <h2>Kuhu staatiline pluss kaob — <span class="selyt"></span>. aasta dekompositsioon <span class="info" tabindex="0">i<span class="tip">Juga-graafik lahutab valitud prognoosiaasta tulemuse sammudeks: staatiline lagi (baas × τ ilma käitumiseta) miinus investeeringu-drag, varjamine, shifting ja kogumiskadu annab T_klassik'u; sellest lahutatakse kehtiva korra laekumine. Iga riba = ühe teguri panus eurodes.</span></span></h2>
-      <div class="sub">Staatilisest laest netomõjuni, aktiivne ankur ja parameetrid.</div>
-      <div class="cwrap"><canvas id="cWater"></canvas></div>
-    </div>
-
-
-
-
-
-    <div class="card">
-      <h2>Väline valideerimine — võrdlus RM-i ühekordsetega <span class="info" tabindex="0">i<span class="tip">RM kevadprognoos 2026, Tabel 22 (lk 70) loetleb ühekordsed meetmed JIT-laekumises: 2024 = 164 M€, 2025 = 142 M€. Neist puhastatud laekumine on RM-i enda sõltumatu hinnang „normaalsele" tasemele. RM-i arvutus ei kasuta mudeli metoodikat, kuid kasutab osaliselt sama alusandmestikku (MTA laekumised), mistõttu tegemist ei ole täielikult sõltumatu kontrolliga. Lisaks: alates struktuurse baseline’i v2-st tuleb mudeli dividendikomponent samast kasumibaasist, mis toodab T_klassiku.</span></span></h2>
-      <div class="sub">RM-i ühekordsetest puhastatud JIT vs mudeli struktuurne baseline</div>
-      <div id="extVal"></div>
-      <button class="gobtn" data-goto="met">Vaata metoodikate võrdlust ja üleminekureeglit →</button>
-    </div>
-    <div class="card">
-      <h2>Mudeli kvaliteet</h2>
-      <div class="sub">Kokkuvõte — detailid Eksperdi vaates</div>
-      <div class="q"><span class="qi qok">✓</span><span>Alt-üles hinnang vs MTA tegelik laekumine: viga <b style="font-family:var(--mono)">−2,1%</b> (2024)</span></div>
-      <div class="q"><span class="qi qok">✓</span><span>Dividendiproksü määrakorrigeeritud jääkviga: <b style="font-family:var(--mono)">−3,2%</b> (2024)</span></div>
-      <div class="q"><span class="qi qwarn">⚠</span><span>Käitumisparameetrid on illustratiivsed, kirjandusest veel kalibreerimata — tulemusi tõlgenda vahemikuna</span></div>
-      <div class="q"><span class="qi qwarn">⚠</span><span><b>Osaluse vabastus on nüüd seadusjärgse ≥10% osaluse testiga 🟢</b> (TuMS § 50 lg 1¹), tuvastatud RIK osanike avaandmete omandusgraafist: 39 023 aktiivset firma–firma seost, neist 32 382 ≥10%, 17 033 emaettevõtet. Varasem finantstulu osakaalu heuristik on asendatud. Osaluskaaluga on 99,3% firma–firma dividendivoost vabastatud, ehk lävend on praktiliselt mittesiduv. Tõendamata 🟠 jääb ainult see, kui suur osa vabastusest on kasumibaasist juba maha arvatud: seda ei ole kontrollitud TSD koodi 7310 vastu (2024: 1 742 M€ = 26,0% kasumibaasist). Ebakindluse laius ületab ühe parameetri kohta nii käitumiseelduste kui baseline’i valiku panuse. <b>Praegune seis ei võimalda välistada, et ΔR märk on vale.</b> <span id="partexHint"></span></span></div>
-      <div class="q"><span class="qi qwarn">⚠</span><span id="q1range"></span></div>
-      <div class="q"><span class="qi qwarn">⚠</span><span>2026 tegelik laekumine (jaan–mai) jääb mõlemast baseline’ist allapoole — tõenäoline ettejaotamise tagasilöögi aasta</span></div>
-      <button class="gobtn" data-goto="met">Vaata detailset valideerimist ja tundlikkust →</button>
-    </div>
   </div>
 </section>
 
@@ -434,7 +407,7 @@ body.nopanel .wrap{grid-template-columns:1fr}
     <div class="ytwrap" id="ytWrap"></div>
     <div class="hint" style="margin-top:12px;line-height:1.7">
       <b style="color:var(--mut)">Veergude selgitus:</b>
-      Maksustatav kasumibaas = positiivne raamatupidamislik kasum pärast kahjumi edasikandmist ja osaluspõhiselt vabastatud kontsernisisese dividenditulu eemaldamist. Kriteerium on seadusjärgne <b>≥10% osalus</b> (TuMS § 50 lg 1¹), tuvastatud RIK osanike avaandmetest ehitatud firma–firma omandusgraafist (39 023 aktiivset seost, neist 32 382 ≥10%). Varasem finantstulu osakaalu heuristik on asendatud, sest see ei vastanud seaduse testile. See on hinnang potentsiaalsele maksubaasile, mitte klassikalise korra tegelik maksubaas — viimane sõltuks maksureeglitest, mida Eestis ei ole kehtestatud.
+      Maksustatav kasumibaas = positiivne raamatupidamislik kasum pärast kahjumi edasikandmist ja osaluspõhiselt vabastatud kontsernisisese dividenditulu eemaldamist. Kriteerium on seadusjärgne <b>≥10% osalus</b> (TuMS § 50 lg 1¹), tuvastatud RIK osanike avaandmetest ehitatud firma–firma omandusgraafist (39 023 aktiivset seost, neist 32 382 ≥10%). Maha võetud kontsernisisese dividenditulu maht on ristkontrollitud MTA <b>TSD lisa 7 „maksuvaba edasijaotus" (kood 7310)</b> vastu — 2023 = 1 176 · 2024 = 1 742 · 2025 = 1 548 M€ — mis on selle mõõdetud alampiir. Varasem finantstulu osakaalu heuristik on asendatud, sest see ei vastanud seaduse testile. See on hinnang potentsiaalsele maksubaasile, mitte klassikalise korra tegelik maksubaas — viimane sõltuks maksureeglitest, mida Eestis ei ole kehtestatud.
       Efektiivne baas = sama baas pärast käitumisreaktsioone (varjamine, shifting, investeeringu-drag) — ainult prognoosis.
       Efektiivne määr = maksulaekumine ÷ kasumibaas: näitab, kui suure osa kogukasumist riik tegelikult kätte saab kummaski süsteemis.
       <br><b style="color:var(--mut)">Märkused:</b>
@@ -515,14 +488,6 @@ body.nopanel .wrap{grid-template-columns:1fr}
   </div>
       </div>
       <div class="card full" style="margin:0">
-        <h2 style="font-size:14px">KM ja tööjõumaksude satelliit <span class="chip" style="border-color:var(--amber);color:var(--amber)">VALIDEERIMATA</span></h2>
-        <div class="sub">CIT + käibemaks + tööjõumaksud kokku mõlemas maailmas</div>
-        <div class="hint" style="border-left:3px solid var(--amber);padding-left:10px;margin-bottom:10px">⚠ <b>Tõlgenda suunda, mitte taset.</b> See satelliit tugineb kalibreerimata eeldustele: KM baas on tuletatud (4 200 M€ ÷ 23% segamäär), palgafondi osakaal SKP-st 47%, ja tööjõu kanali kordaja λ = tm × 0,1 on ilma allikata. Lisaks: kogutulu on miljardite tasemel, mille kõrval CIT-erinevus on visuaalselt peaaegu nähtamatu — seetõttu ei kuvata seda graafikut avalikus Ülevaates. Arvutusloogika on täies mahus alles.</div>
-        <div class="ctl" style="max-width:420px"><div class="row"><label for="tm">Tööjõu mõju (ainult satelliit) <span class="info" tabindex="0">i<span class="tip">Osa maksukoormusest kandub töötajatele: palgakasv aeglustub, mis vähendab tarbimist (KM-baas) ja tööjõumakse. Kirjandus: Fuest, Peichl & Siegloch 2018 (AER) — ligikaudu 50% koormusest kandub palkadesse; Arulampalam, Devereux & Maffini 2012. NB: see parameeter EI mõjuta ΔR-i, sest T_klassik = baas × (1−h−s) × τ × eff ei sisalda tööjõukanalit.</span></span></label><output id="o_tm"></output></div>
-          <input type="range" id="tm" min="0" max="1" step="0.01"></div>
-        <div class="cwrap"><canvas id="cTotal"></canvas></div>
-      </div>
-      <div class="card full" style="margin:0">
         <h2 style="font-size:14px">Stsenaarium ja populatsiooniankur</h2>
         <div class="sub">Avalikus vaates on need fikseeritud (baasstsenaarium, ühine populatsioon); siin saab neid võrdluseks vahetada</div>
         <div style="display:flex;gap:20px;flex-wrap:wrap">
@@ -585,10 +550,6 @@ body.nopanel .wrap{grid-template-columns:1fr}
         <table><thead><tr><th>Aasta</th><th>Kassa-trend</th><th>Struktuurne</th><th>RM ametlik (Tabel 16)</th><th>T_klassik</th><th>ΔR valitud rajaga</th></tr></thead><tbody id="blCmp"></tbody></table>
         <div class="hint" style="margin-top:8px" id="blCmpNote"></div>
       </div>
-      <div class="card full" style="margin:0">
-        <h2 style="font-size:14px">Baseline Explorer — miks lähtetasemed erinevad? <span class="info" tabindex="0">i<span class="tip">Lahutab 2025. aasta lähtetasemete 127 M€ vahe komponentideks. Kassa-trendi tase on tegelik laekumine (fakt); struktuurse taseme komponendid on TSD/JITM andmetest, aga 2025 kassa komponentlahutus ise on osalt tuletatud — märgistus näitab, mis on fakt ja mis hinnang.</span></span></h2>
-        <div id="blExp"></div>
-      </div>
       <div class="card" style="margin:0">
         <h2 style="font-size:14px">Meetodite eeldused</h2>
         <table><thead><tr><th style="text-align:left"></th><th style="text-align:left">Kassa-trend</th><th style="text-align:left">Struktuurne</th></tr></thead>
@@ -616,19 +577,6 @@ body.nopanel .wrap{grid-template-columns:1fr}
       <div class="sub">CIT määr × kasumi varjamine (rakendub kõigile lukustamata aastatele); muud parameetrid liuguritest. Klõps lahtril seab liugurid.</div>
       <div class="hm" id="hm"></div>
       <div class="hint">Roheline = laekumine kasvab · punane = reform kaotaks tulu</div>
-    </div>
-    <div class="card" style="margin:0">
-      <h2>Valideering — kas mudelit tohib uskuda? <span class="info" tabindex="0">i<span class="tip">Võrdleb mudeli alt-üles hinnangut kehtiva korra laekumisele MTA tegeliku laekumisega. Kui viga on ±5–10% sees, tohib klassikalise korra stsenaariumi tõlgendada; kui mitte, on eespool olevad numbrid ebausaldusväärsed. See tabel EI sõltu liuguritest — see mõõdab andmekonveieri kvaliteeti.</span></span></h2>
-      <div class="sub">Alt-üles T_kehtiv vs MTA tegelik JIT. Värav: |viga| ≤ 5–10%.</div>
-      <table>
-        <thead><tr><th>Aasta</th><th>MTA tegelik</th><th>Mudel</th><th>Viga</th></tr></thead>
-        <tbody id="valBody"></tbody>
-      </table>
-      <div class="hint">JIT sisaldab ka pankade avansilist tulumaksu ja erisoodustusi, mida dividendiproksü ei püüa — kerge alahinnang 2023–24 on ootuspärane. <b>NB finantssektori väljajätmisel:</b> pankade avansiline osa on aastate 2019–2024 kohta teada (JITM) ja lahutatav, kuid pankade JAOTATUD kasumi tulumaks on avalikest allikatest eraldatav ainult 2024 (116 M€) ja 2025 (42 M€) kohta (RM Tabel 22) — varasemate aastate valideerimisread sisaldavad seetõttu endiselt pankade dividendimaksu. 🟠</div>
-      <h2 style="font-size:13px;margin-top:14px">Tase 2 — õige sihtmärk: JIT dividendikomponent <span class="info" tabindex="0">i<span class="tip">JITM komponentlahutus näitab, et mudel modelleerib ainult dividendimaksu (lisa 7), mitte kogu JIT-i. Toorviga selle vastu on suur (+24…+34%), aga TSD-st mõõdetud efektiivse määraga korrigeerituna (2023: 23,4%; 2024: 22,0% — mudel kasutas 28,2%) jääb dividendiproksü enda viga väikeseks. Tase 1 hea tulemus oli kahe vea vastastikune kustumine.</span></span></h2>
-      <table><thead><tr><th>Aasta</th><th>Lisa 7 tegelik</th><th>Mudel (28,2%)</th><th>Toorviga</th><th>Määrakorrig.</th><th>Jääkviga</th></tr></thead><tbody id="val2Body"></tbody></table>
-      <div class="hint">2020 mõõdetud määr puudub (vaja 2020 TSD faili).</div>
-      <div id="kassaTekke" class="hint" style="margin-top:6px"></div>
     </div>
       <div class="card full" style="margin:0">
         <h2 style="font-size:14px">MTA andmete ristkontrollid <span class="chip" style="border-color:var(--grn);color:var(--grn)">KÕIK KLAPIVAD</span></h2>
@@ -1090,7 +1038,7 @@ const $ = id => document.getElementById(id);
 
 const pct1s = v => (v*100).toFixed(1).replace('.',',')+' %';
 const YEAR_SLIDERS = {tau:pct,vh:pct1s,sh:pct1s,im:pct1s,eff:pct,g:pct,wg:pct,jaotus:pct};
-const EXP_SLIDERS  = {tm:pct0};   // Eksperdi vaate liugurid (mõjutavad ainult KM/tööjõu satelliiti)
+const EXP_SLIDERS  = {};   // Eksperdi vaate liugurid (mõjutavad ainult KM/tööjõu satelliiti)
 const ALL_SLIDERS  = {...YEAR_SLIDERS, ...EXP_SLIDERS};
 function isMod(y){ const d=defFor(y); return Object.keys(d).some(k=>Math.abs(d[k]-params[y][k])>1e-9); }
 
@@ -1195,21 +1143,6 @@ const cCorr = new Chart($('cCorridor'),{type:'line',
   plugins:{tooltip:tt,legend:{labels:{boxWidth:14,boxHeight:2,font:{family:"'IBM Plex Sans'",size:11}}}},
   scales:{y:{title:{display:true,text:'ΔR (M€)'},grid:{color:c=>c.tick.value===0?'#3a4152':'#232833'}},x:{grid:{display:false}}}}});
 
-const cWater = new Chart($('cWater'),{type:'bar',
- data:{labels:['Staatiline lagi','Investeeringu-drag','Varjamine','Shifting','Kogumiskadu','T_klassik netto','− T_kehtiv (DPT)','ΔR'],
-  datasets:[{data:[],backgroundColor:[],borderRadius:4,borderSkipped:false}]},
- options:{responsive:true,maintainAspectRatio:false,animation:!noAnim,
-  plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:c=>{const[a,b]=c.raw;return ` ${sign(b-a)} M€`}}}},
-  scales:{y:{title:{display:true,text:'M€'}},x:{ticks:{font:{size:9.5},maxRotation:45,minRotation:45},grid:{display:false}}}}});
-
-const cTot = new Chart($('cTotal'),{type:'line',
- data:{labels:FY,datasets:[
-  {label:'Baseline (DPT jätkub)',data:[],borderColor:'#4f8ff7',backgroundColor:'#4f8ff7',borderWidth:2,pointRadius:3,tension:.25},
-  {label:'Reform (klassikaline CIT)',data:[],borderColor:'#f0a84b',backgroundColor:'#f0a84b',borderWidth:2,pointRadius:3,tension:.25}]},
- options:{responsive:true,maintainAspectRatio:false,animation:!noAnim,interaction:{mode:'index',intersect:false},
-  plugins:{tooltip:tt,legend:{labels:{boxWidth:14,boxHeight:2,font:{family:"'IBM Plex Sans'",size:11}}}},
-  scales:{y:{title:{display:true,text:'Kogutulu (M€)'}},x:{grid:{display:false}}}}});
-
 /* heatmap: τ × varjamise mõju-% */
 const TAUS=[0.15,0.18,0.20,0.22,0.25], VHS=[0,0.25,0.5,0.75,1];
 function hmColor(v){
@@ -1238,23 +1171,6 @@ function buildHM(){
     c.onclick=go; c.onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();go();}};
   });
 }
-
-/* valideering */
-$('valBody').innerHTML = VAL.map(([y,a,m])=>{
-  const e=m/a-1, cls=Math.abs(e)<=0.05?'ok':'warn';
-  return `<tr><td>${y}</td><td>${nf(a)}</td><td>${nf(m)}</td><td class="${cls}">${(e*100).toFixed(1).replace('.',',')} %</td></tr>`;
-}).join('');
-
-/* Tase 2 valideering */
-$('val2Body').innerHTML = VAL2.map(([y,teg,mud,eff])=>{
-  const raw=(mud/teg-1)*100;
-  const korr = eff? mud*eff/0.28205 : null;
-  const je = korr? (korr/teg-1)*100 : null;
-  return `<tr><td>${y}</td><td>${nf(teg)}</td><td>${nf(mud)}</td>
-    <td class="neg">+${raw.toFixed(1).replace('.',',')} %</td>
-    <td>${korr?nf(korr):'—'}</td>
-    <td class="${je===null?'':(Math.abs(je)<=15?'ok':'warn')}">${je===null?'—':(je>=0?'+':'−')+Math.abs(je).toFixed(1).replace('.',',')+' %'}</td></tr>`;
-}).join('');
 
 /* ================= METOODIKA VÕRDLUS ================= */
 const cMet = new Chart($('cMet'),{type:'line',
@@ -1309,31 +1225,9 @@ function buildMet(r){
     const cagr=(a,b)=>((Math.pow(b/a,1/5)-1)*100).toFixed(1).replace('.',',')+'%';
     $('jitkNote').innerHTML = `Kasvutempo 2019→2024 (CAGR): dividendid <b>${cagr(JITK[2019].div,JITK[2024].div)}</b> · pangad <b>${cagr(JITK[2019].pank,JITK[2024].pank)}</b> · erisoodustused <b>${cagr(JITK[2019].eris,JITK[2024].eris)}</b> · kingitused+muu <b>${cagr(JITK[2019].king,JITK[2024].king)}</b> · kokku <b>${cagr(JITK[2019].kokku,JITK[2024].kokku)}</b>. Pangakomponent kasvas kõige kiiremini ja täiesti eri rütmis — see on intressitsükkel, mitte majanduskasv, ja põhjendab finantssektori eraldi käsitlust. NB: pankade JAOTATUD kasumi tulumaks (2024: 116 M€, RM Tabel 22) istub dividendiveerus, mitte pangaveerus.`;
   }
-  { const e=extValNums(); const P2=v=>(v>=0?'+':'−')+Math.abs(v).toFixed(1).replace('.',',')+' %';
-    const col=v=>Math.abs(v)<=5?'var(--grn)':'var(--amber)';
-    $('extVal').innerHTML =
-      `<div class="hint" style="margin-bottom:8px">Aktiivne seade: <b>${e.gs?'finantssektor väljas':'finantssektor sees'}</b>. Mõlemad vaated on all kõrvuti, sest tulemus on selle valiku suhtes tundlik.</div>`+
-      `<table><thead><tr><th style="text-align:left"></th><th>Pangad sees</th><th>Pangad väljas${e.gs?' (aktiivne)':''}</th></tr></thead><tbody>`+
-      `<tr><td style="text-align:left">RM-i ühekordsetest puhastatud 2025 🟢</td><td>${nf(e.gs?e.rm25o:e.rm25)}</td><td>${nf(e.gs?e.rm25:e.rm25o)}</td></tr>`+
-      `<tr><td style="text-align:left">Mudeli struktuurne baseline 2025 🔵</td><td>${nf(e.gs?e.sto:e.st)}</td><td>${nf(e.gs?e.st:e.sto)}</td></tr>`+
-      `<tr class="sum"><td style="text-align:left">Vahe</td><td style="color:${col(e.gs?e.do:e.d)}">${P2(e.gs?e.do:e.d)}</td><td style="color:${col(e.gs?e.d:e.do)}">${P2(e.gs?e.d:e.do)}</td></tr>`+
-      `</tbody></table>`+
-      `<div class="hint" style="margin-top:8px"><b>Kuidas seda tohib tsiteerida.</b> Kinnitus on olemas, kuid ta on <b>seadetundlik ja nõrgem kui algne</b>: pangad sees ${P2(e.gs?e.do:e.d)}, pangad väljas (vaikeseade) ${P2(e.gs?e.d:e.do)} — märk pöördub ja hälve ligikaudu kahekordistub. Mõlemad jäävad ±5% sisse, aga väidet „kaks sõltumatut teed annavad praktiliselt sama arvu" <b>ei tohi kasutada</b>: (a) tulemus sõltub pangaseadest, (b) RM-i arvutus kasutab osaliselt sama alusandmestikku (MTA laekumised) ja (c) struktuurse baseline’i v2 dividendikomponent tuleb samast kasumibaasist kui T_klassik, mistõttu teed ei ole teineteisest sõltumatud. Korrektne sõnastus: <i>„RM-i ühekordsetest puhastatud laekumine ja mudeli struktuurne tase langevad kokku ±3% piires mõlemas pangaseades."</i> Pankade režiimis lahutatakse RM-i ühekordsetest ainult mittepankade osa (${nf(RM_ONEOFF[2025].kokku-RM_ONEOFF[2025].pank)} M€), sest pangaosa (${nf(RM_ONEOFF[2025].pank)} M€) on juba pangaplokiga eemaldatud.</div>`+
-      `<div class="hint" style="margin-top:4px">Sama arvutus 2024. aasta kohta: RM-i puhastatud ${nf(e.rm24)} M€ (ühekordsed ${nf(RM_ONEOFF[2024].kokku)}, sh pangad ${nf(RM_ONEOFF[2024].pank)}).</div>`;
+  { const e=extValNums();
     $('eldT').textContent = nf(e.base25)+' M€ (kassalaekumine'+(e.gs?' − pangaplokk '+nf(FINBL25):'')+')';
     $('eldS').textContent = nf(e.st)+' M€ ('+nf(struktDiv())+' div'+(e.gs?'':' + '+nf(STRUKT.pank)+' pangad')+' + '+nf(STRUKT.vaike)+' väikesed)';
-  }
-  { const t=TSD_TEKKE[2024], k=JITK[2024].div, vahe=t-k;
-    const nihe=ettejaotusMaks(DETS_NORM_PROF), niheAlt=ettejaotusMaks(DETS_NORM_ALT);
-    $('kassaTekke').innerHTML =
-      `<b>Tekke- ja kassapõhise vahe (2024) — neli eraldi suurust:</b><br>`+
-      `① tekkepõhine dividendimaks (TSD kood 7200) <b>${nf(t)}</b> M€ 🟢 · ② kassapõhine dividendikomponent (JITM) <b>${nf(k)}</b> M€ 🟢 · vahe ① − ② = <b>${nf(vahe)}</b> M€.<br>`+
-      `③ Sellest kalendriline nihe detsembri LIIGSEST osast: <b>${nf(nihe)}</b> M€ (profiilipõhine normaaldetsember ${nf(DETS_NORM_PROF)}) või <b>${nf(niheAlt)}</b> M€ (varasem 450 hinnang) 🟠.<br>`+
-      `④ Seletamata jääk: <b style="color:var(--amber)">${nf(vahe-nihe)}–${nf(vahe-niheAlt)}</b> M€.`+
-      `<div style="border-left:3px solid var(--amber);padding-left:10px;margin-top:8px">🟠 <b>Lahendamata vastuolu.</b> Seletamata jääk on kahtlaselt lähedal pankade jaotatud kasumi tulumaksule 2024 (${nf(FINDIV[2024])} M€). <b>Hüpotees:</b> TSD 7008-põhine tekkepõhine maks sisaldab pankade jaotatud kasumi tulumaksu, mida JITM-i dividendirida ei sisalda. <b>Vastuväide:</b> mudeli koodikommentaar (STRUKT juures) väidab vastupidist — et pankade jaotatud osa istub just JITM-i dividendireas. Mõlemad väited jäävad kirja kuni JITM-i ja TSD definitsioonide ristkontrollini; mudel ei vali kumbagi.</div>`;
-  }
-  { const eV=extValNums();
-    $('q1range').innerHTML = `Struktuurse baseline’i tase on <b>vahemik ${nf(eV.st*0.88)}–${nf(eV.st)} M€</b>, mitte punkt: TSD tekkepõhise ja JITM kassapõhise seeria vahel on ${nf(134)} M€ seletamata jääk, mille lahendus liigutab taset kuni −12%. Päring MTA-le on väljas.`;
   }
   {
     if($('wedgeNote')){ const w=G.wedgeMult; G.wedgeMult=!w; const alt=run(anchor); G.wedgeMult=w;
@@ -1401,7 +1295,7 @@ function buildMet(r){
     $('partexNote').innerHTML = `Märk pöördub, kui kajastamata osaluse vabastus ületab <b style="font-family:var(--mono)">${nf(zero)} M€</b> (${pct1(zero/b24)} kasumibaasist). Võrdluseks: TSD kood 7310 on 2024. aastal <b>1 742 M€</b> ja see on ALAMPIIR. <b style="color:var(--amber)">Märgipöörde punkt asub usutavas vahemikus</b> — praegune kalibreerimata seis ei võimalda välistada, et ΔR on negatiivne.<br><span style="color:var(--dim)">Marginaalne mõju: iga kajastamata 100 M€ vähendab ΔR-i ligikaudu ${nf(Math.abs((run(anchor,null,null,{base:1-100/b24,dpt:1}).dr[LY0]-dr0)))} M€ võrra. Arvutus kasutab olemasolevat baasi-skaleerimise parameetrit, seega vähendus kasvab koos kasumibaasiga; kiilud (varjamine, nihutamine) rakenduvad vähendatud baasile, mis on mudeli sisemine loogika.</span><br><span style="color:var(--dim)"><b>Tabel on ALATI aktiivse seade peal</b> — märgipöörde punkt sõltub tugevalt sellest, milline baseline ja millised lülitid on valitud. Võrdluseks konservatiivseim seade (kassa-trend, erisoodustuste sümmeetria ja tagasilöök väljas): lähtepunkt ΔR 2030 = +297 ja märgipööre <b>1 144 M€</b> juures, mis jääb ALLA TSD 7310 väärtuse. Kumbagi arvu ei tohi tsiteerida ilma seadet nimetamata.</span>`;
     if($('partexHint')) $('partexHint').innerHTML = `Märk pöörduks, kui kajastamata jääk ületab <b style="font-family:var(--mono)">${nf(zero)} M€</b>.`;
   }
-  buildExplorer(); buildTracker(r);
+  buildTracker(r);
   // 2030 võrdlustabel (trend / strukt / eksperdid)
   const cmp=[['Kassa-trend',r.t0t[LY]],['Struktuurne',r.t0s[LY]],['RM ametlik (ekstrapoleeritud)',r.t0r[LY]],
              ['Rahandusministeerium',G.eksp.rm30],['Eesti Pank',G.eksp.ep30]];
@@ -1460,44 +1354,6 @@ function trackerErr(){
   return {n:fl.length, ca, ct, cs, eT:(ct/ca-1)*100, eS:(cs/ca-1)*100, ext:ca/wf, wf};
 }
 /* ================= BASELINE EXPLORER ================= */
-function buildExplorer(){
-  /* C1: kõik arvud järgivad aktiivset pangaseadet ja aktiivset baseline'i meetodit. */
-  const fxE   = G.finExcl;
-  const kassaT = MTA[2025] - (fxE ? FINBL25 : 0);                       // kassa-trendi lähtetase aktiivses seades
-  const sPank  = fxE ? 0 : STRUKT.pank;                                 // pangarida struktuurses
-  const sDiv   = struktDiv();                                           // aktiivse meetodi div (v1/v2, pangaseadega)
-  const sTot   = struktLevel();
-  const kassaDiv = kassaT - sPank - STRUKT.vaike;                       // JÄÄKARVUTUS 🟠
-  const rows=[
-    ['Dividendikomponent', kassaDiv, sDiv, 'bl',
-     'Kassa pool on JÄÄKARVUTUS 🟠 (kogu laekumine − pangad − väikesed), mitte sõltumatu mõõtmine. Vt dekompositsiooni allpool.'],
-    ['Pankade avansiline tulumaks', STRUKT.pank, STRUKT.pank, 'o',
-     'Mõlemas sama 🟠 hinnang (140 M€; 2024 fakt 133,8). See rida on AINULT avansiline maks — pankade jaotatud kasumi TM (2024: 116; 2025: 42, RM Tab 22 🟢) istub dividendikomponendis. Küsi JITM-i 2025 rida, siis muutub hinnang faktiks.'],
-    ['Väikesed komponendid (erisoodustused jm)', STRUKT.vaike, STRUKT.vaike, 'o',
-     'Mõlemas sama 🟠 trend-hinnang (2024 fakt 69,6; stabiilne seeria).']
-  ];
-  const gap = kassaT - sTot;
-  const bar=(v,max,col)=>`<span class="dbar" style="width:${Math.max(2,Math.round(Math.abs(v)/max*70))}px;background:${col};display:inline-block;vertical-align:middle"></span>`;
-  $('blExp').innerHTML =
-    `<div class="hint" style="margin-bottom:8px">Aktiivne seade: <b>${fxE?'finantssektor väljas':'finantssektor sees'}</b> · <b>${G.blV2?'struktuurne v2 (δ-põhine)':'struktuurne v1 (fikseeritud)'}</b>. Kõik arvud järgivad seda seadet.</div>
-     <div class="arow"><span><span class="b g">🟢 fakt</span><span class="an">Kassa-trend lähtetase 2025${fxE?' (tegelik laekumine 1 125,3 − pangaplokk '+nf(FINBL25)+')':' (tegelik laekumine)'}</span></span><span class="av">${nf(kassaT)} M€</span></div>
-     <div class="arow"><span><span class="b bl">🔵 komponendid</span><span class="an">Struktuurne lähtetase 2025 (${nf(sDiv)} div${fxE?'':' + '+nf(sPank)+' pangad'} + ${nf(STRUKT.vaike)} väikesed)</span></span><span class="av">${nf(sTot)} M€</span></div>
-     <div class="arow" style="border-bottom:2px solid var(--line)"><span><span class="an" style="font-weight:600">Vahe</span></span><span class="av" style="color:var(--amber)">${gap>=0?'−':'+'}${nf(Math.abs(gap))} M€ (${gap>=0?'−':'+'}${(Math.abs(gap)/kassaT*100).toFixed(1).replace('.',',')}%)</span></div>
-     <div style="font:600 11px var(--mono);letter-spacing:1px;color:var(--dim);text-transform:uppercase;margin:12px 0 4px">Mille tõttu?</div>` +
-    rows.map(x=>{
-      const d=x[2]-x[1];
-      return `<div class="arow"><span><span class="b ${x[3]}">${x[3]==='bl'?'🔵':'🟠'}</span><span class="an">${x[0]}</span><span class="as"> ${x[4]}</span></span>
-        <span class="av">${nf(x[1])} → ${nf(x[2])} &nbsp;${d===0?'<span class="eff">±0</span>':`<span style="color:var(--amber)">${sign(d)}</span> ${bar(d,130,'var(--amber)')}`}</span></div>`;
-    }).join('') +
-    `<div style="font:600 11px var(--mono);letter-spacing:1px;color:var(--dim);text-transform:uppercase;margin:14px 0 4px">Kalendrinihke dekompositsioon — ühtsel alusel (täissummad)</div>`+
-    `<div class="arow"><span><span class="b g">🟢</span><span class="an">Dets 2024 deklareeritud dividendid ${nf(DETS[2024])} M€ → maks (× ${pct1(EFF24)})</span><span class="as"> laekub jaanuaris 2025, seega 2025. aasta kassas SEES</span></span><span class="av">+${nf(DETS[2024]*EFF24)} M€</span></div>`+
-    `<div class="arow"><span><span class="b g">🟢</span><span class="an">Dets 2025 deklareeritud dividendid ${nf(DETS[2025])} M€ → maks</span><span class="as"> laekub jaanuaris 2026, seega 2025. aasta kassast VÄLJAS</span></span><span class="av">−${nf(DETS[2025]*EFF24)} M€</span></div>`+
-    `<div class="arow" style="border-bottom:2px solid var(--line)"><span><span class="an" style="font-weight:600">Netonihe 2025. aasta kassasse</span></span><span class="av">+${nf((DETS[2024]-DETS[2025])*EFF24)} M€</span></div>`+
-    `<div class="arow"><span><span class="b o">🟠</span><span class="an">Mõõdetud vahe (kassa-jääk ${nf(kassaDiv)} − struktuurne ${nf(sDiv)})</span></span><span class="av">+${nf(kassaDiv-sDiv)} M€</span></div>`+
-    `<div class="arow"><span><span class="b o">🟠</span><span class="an" style="color:var(--amber)">SELETAMATA JÄÄK</span></span><span class="av" style="color:var(--amber)">${nf((DETS[2024]-DETS[2025])*EFF24-(kassaDiv-sDiv))} M€</span></div>`+
-    `<div class="hint" style="margin-top:8px"><b>Aus tõlgendus:</b> kassapoolne dividendikomponent on jääkarvutus (kogu laekumine miinus pangad miinus väikesed), seega vahe paigutub konstruktsiooni järgi tervikuna sellele reale. <b>See EI ole tõend, et vahe pärineb dividendidest</b> — see on tuletusmeetodi tagajärg. Kalendrinihke täissummadel arvutatud ${nf((DETS[2024]-DETS[2025])*EFF24)} M€ ja mõõdetud ${nf(kassaDiv-sDiv)} M€ ei lange kokku; vahe ${nf((DETS[2024]-DETS[2025])*EFF24-(kassaDiv-sDiv))} M€ jääb katmata ja on tõenäoliselt jagunenud pankade ning väikeste komponentide 🟠 hinnangute vahel, mida ei ole sõltumatult mõõdetud.</div>`+
-    `<div class="hint" style="margin-top:6px"><b>Ettejaotamise suuruse tundlikkus:</b> „normaalse detsembri" alus ei ole üheselt teada. Mudeli enda hooajaprofiiliga (KUUW_ALL[0] = 13,11% struktuursest voost ${nf(STRUKT_VOOG)} M€) on normaalne detsember ${nf(DETS_NORM_PROF)} M€ → liigse osa maks ${nf(ettejaotusMaks(DETS_NORM_PROF))} M€. Varasema 450 M€ hinnanguga (allikata 🟠) oleks see ${nf(ettejaotusMaks(DETS_NORM_ALT))} M€. Kasuta vahemikku ${nf(ettejaotusMaks(DETS_NORM_ALT))}–${nf(ettejaotusMaks(DETS_NORM_PROF))} M€, mitte üksikut arvu.</div>`;
-}
 
 /* ================= 2026 REALITY TRACKER ================= */
 const cTrack = new Chart($('cTrack'),{type:'line',
@@ -1647,14 +1503,6 @@ function render(){
   steps.push([0,P.tk+P.tr]); c=P.tk+P.tr;
   steps.push([c,c-P.dpt]); c-=P.dpt;
   steps.push([0,c]);
-  cWater.data.datasets[0].data=steps;
-  cWater.data.datasets[0].backgroundColor=['#4f8ff7','#e5646c','#e5646c','#e5646c','#e5646c','#8fc1ff','#e5646c',c>=0?'#47c98f':'#e5646c'];
-  cWater.update();
-
-  cTot.data.datasets[0].data=FY.map(y=>rAct.tot0[y]);
-  cTot.data.datasets[1].data=FY.map(y=>rAct.totR[y]);
-  cTot.update();
-
   const set=(id,v)=>{const e=$(id);e.textContent=sign(v)+' M€';e.className='v '+(v>=0?'pos':'neg');};
   const dblRisk = G.jaotusManual && G.pb && FY.some(y=>Math.abs(params[y].jaotus)>1e-9);
   const set2=(id,v)=>{const e=$(id);e.textContent=sign(v)+' M€'+(dblRisk?' ✱':'');e.className='v '+(v>=0?'pos':'neg');};
@@ -1676,7 +1524,7 @@ const infoIcon = t => `<span class="info" tabindex="0">i<span class="tip">${t}</
 /* veeruseletuste riba aastatabeli kohal */
 function buildColStrip(){
   const terms=[
-    ['Maksustatav kasumibaas','Positiivne raamatupidamislik kasum pärast kahjumi edasikandmist ja osaluspõhiselt vabastatud kontsernisisese dividenditulu eemaldamist. Kriteerium: seadusjärgne ≥10% osalus (TuMS § 50 lg 1¹), tuvastatud RIK osanike avaandmete omandusgraafist — 39 023 aktiivset firma–firma seost, neist 32 382 ≥10%, 17 033 emaettevõtet. Vabastus tuleneb EL direktiivist 2011/96/EL ja säiliks klassikalise CIT all. Andmepiirang: graaf katab OÜ-de osanikke; aktsiaseltside aktsionärid on Nasdaq CSD registris, mitte avaandmetes. Ajaloos mikrosimist, prognoosis kasvatatud SKP-ga miinus investeeringute tasemeefekt. (Allikas: RIK avaandmed; tunnusreegel 🟠)'],
+    ['Maksustatav kasumibaas','Positiivne raamatupidamislik kasum pärast kahjumi edasikandmist ja osaluspõhiselt vabastatud kontsernisisese dividenditulu eemaldamist. Kriteerium: seadusjärgne ≥10% osalus (TuMS § 50 lg 1¹), tuvastatud RIK osanike avaandmete omandusgraafist — 39 023 aktiivset firma–firma seost, neist 32 382 ≥10%, 17 033 emaettevõtet. Maht ristkontrollitud MTA TSD lisa 7 koodi 7310 (maksuvaba edasijaotus; 2024 = 1 742 M€, alampiir) vastu. Vabastus tuleneb EL direktiivist 2011/96/EL ja säiliks klassikalise CIT all. Andmepiirang: graaf katab OÜ-de osanikke; aktsiaseltside aktsionärid on Nasdaq CSD registris, mitte avaandmetes. Ajaloos mikrosimist, prognoosis kasvatatud SKP-ga miinus investeeringute tasemeefekt. (Allikas: RIK avaandmed; tunnusreegel 🟠)'],
     ['Efektiivne baas','Sama baas pärast käitumisreaktsioone: × (1 − varjamine − shifting). Ainult prognoosis — ajaloos käitumist definitsiooni järgi pole.'],
     ['T_kehtiv (DPT)','Kehtiva korra laekumine: ajaloos MTA tegelik kassalaekumine, prognoosis 2025 tasemest SKP-ga kasvatatud trend × jaotamise kohandus. (Allikas: Riigieelarve laekumised / MTA JITM)'],
     ['T_klassik (CIT)','Hüpoteetiline klassikalise korra laekumine: ajaloos baas × ajalooline määr (liugur), prognoosis efektiivne baas × aasta CIT määr × kogumise efektiivsus (+ üleminekuvaru). (Allikas: mudeli arvutus RIK andmetel)'],
@@ -1805,8 +1653,8 @@ function showPage(t){
     $(tabs[k]).classList.toggle('on',k===t);
     $(tabs[k]).setAttribute('aria-selected',k===t);
   }
-  if(t==='over'){cCorr.resize();cWater.resize();}
-  if(t==='met'){cMet.resize();cTrack.resize();cTot.resize();}
+  if(t==='over'){cCorr.resize();}
+  if(t==='met'){cMet.resize();cTrack.resize();}
 }
 $('tabIntro').onclick=()=>showPage('intro');
 $('tabOver').onclick=()=>showPage('over');
@@ -1924,11 +1772,11 @@ function applyTheme(light){
   const pnl = cs.getPropertyValue('--panel').trim() || '#1d212b';
   const ln  = cs.getPropertyValue('--line').trim() || '#262b36';
   /* tooltipi taust ja "Kumul. tegelik" joon olid kõvakodeeritud tumeda teema peale */
-  [cCorr,cWater,cTot,cMet,cTrack].forEach(ch=>{ try{
+  [cCorr,cMet,cTrack].forEach(ch=>{ try{
     const t=ch.options?.plugins?.tooltip; if(t){ t.backgroundColor=pnl; t.borderColor=ln; t.titleColor=txt; t.bodyColor=txt; }
   }catch(e){} });
   try{ cTrack.data.datasets[0].borderColor=txt; cTrack.data.datasets[0].backgroundColor=txt; }catch(e){}
-  [cCorr,cWater,cTot,cMet,cTrack].forEach(ch=>{ try{ ch.update('none'); }catch(e){} });
+  [cCorr,cMet,cTrack].forEach(ch=>{ try{ ch.update('none'); }catch(e){} });
   $('themeBtn').textContent = light ? '☀️ Hele' : '🌙 Tume';
 }
 $('themeBtn').onclick=()=>applyTheme(!document.body.classList.contains('light'));
